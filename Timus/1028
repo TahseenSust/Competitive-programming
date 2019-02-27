@@ -1,0 +1,35 @@
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/detail/standard_policies.hpp>
+using namespace __gnu_pbds;
+using namespace std;
+
+typedef pair<int,int> pii;
+
+typedef tree<pii, null_type, less<pii>, rb_tree_tag, tree_order_statistics_node_update> ost;
+
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> ostm;
+
+
+int main()
+{
+
+	int n;
+	pii point[15005];
+	map<int,int>level;
+	cin>>n;
+	ost X;
+	for(int i=0;i<n;i++){
+		cin>>point[i].first>>point[i].second;
+		level[X.order_of_key({point[i].first,i+1})]++;
+		//cout<<X.order_of_key({point[i].first,i})<<endl;
+		X.insert({point[i].first,i+1});
+	}
+
+	for(int i=0;i<n;i++){
+		cout<<level[i]<<endl;
+	}
+
+
+}
