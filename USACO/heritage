@@ -1,0 +1,54 @@
+/*
+ID: tahseen1
+TASK: heritage
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int INF=10000000;
+
+ofstream fout ("heritage.out");
+ifstream fin ("heritage.in");
+
+string inorder,preorder,postorder;
+int i=0;
+void traverse(int l,int r)
+{
+    //cout<<l<<' '<<r<<endl;
+    if(l==r){
+        i++;
+        fout<<inorder[l];
+        return;
+    }
+    if(l>r) return;
+    i++;
+    int n=l;
+    while(inorder[n]!=preorder[i]){
+        n++;
+    }
+    traverse(l,n-1);
+    traverse(n+1,r);
+    fout<<inorder[n];
+}
+
+int main()
+{
+
+
+    fin>>inorder>>preorder;
+
+    int n=0;
+    while(inorder[n]!=preorder[0]){
+        n++;
+    }
+
+    traverse(0,n-1);
+    traverse(n+1,inorder.size()-1);
+    fout<<preorder[0]<<endl;
+}
+
+
+

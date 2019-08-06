@@ -1,0 +1,149 @@
+/*
+ID: tahseen1
+TASK: lgame
+LANG: C++14
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<int,int> pii;
+const int INF=(1<<28);
+const int MOD=1266523;
+
+vector<string>S,out;
+
+struct data
+{
+    int tree[30];
+    int complete;
+};
+
+data trie[71229];
+ 
+string text,text2;
+ 
+int tot_node=0,koto_tomo=0,n,m;
+ 
+void Insert_trie(int node,int ind)
+{
+    if(text[ind]=='\0')
+    {
+        trie[node].complete=koto_tomo++;
+        return;
+    }
+    int id=(int) (text[ind]-'a');
+    if(trie[node].tree[id]==-1) trie[node].tree[id]=++tot_node;
+    int nnode=trie[node].tree[id];
+    Insert_trie(nnode,ind+1);
+}
+
+
+void Search_Trie(int node,int mask)
+{
+	if(trie[node].complete!=-1)
+	{
+		out.push_back(S[trie[node].complete]);
+	}
+	int id=0;
+    
+    for(int i=0;i<n;i++){
+    	if(!(mask&(1<<i))){
+    		
+    		id=text[i]-'a';
+    		if(trie[node].tree[id]!=-1){
+	    		int nnode=trie[node].tree[id];
+				Search_Trie(nnode,mask|(1<<i));
+			}
+    	}
+    }
+}
+
+
+int main()
+{
+	ifstream in("lgame.dict");
+
+	string tmp;
+	memset(trie,-1,sizeof trie);
+	while (in>>tmp) {
+		if(tmp[0]=='.'){
+			break;
+		}
+		text=tmp;
+		S.push_back(text);
+		Insert_trie(0,0);
+
+	}
+	freopen("lgame.in","r",stdin);
+	freopen("lgame.out","w",stdout);
+	
+	cin>>tmp;
+	text=tmp;
+	n=text.size();
+	Search_Trie(0,0);
+	set<string>st;
+	for(int i=0;i<out.size();i++){
+		st.insert(out[i]);
+	}
+	int ara[30]={2,5,4,4,1,6,5,5,1,7,6,3,5,2,3,5,7,2,1,2,4,6,6,7,5,7};
+	
+	int score=0,mx=0;
+	out.clear();
+	for(auto x:st){
+		out.push_back(x);
+	}
+
+	int ashol[30]={0};
+	for(int i=0;i<tmp.size();i++){
+		ashol[tmp[i]-'a']++;
+	}
+
+	vector<string>tukao;
+
+	for(int i=0;i<out.size();i++){
+		tukao.push_back(out[i]);
+		for(int j=i+1;j<out.size();j++){
+			int chk[30]={0};
+			for(int k=0;k<out[i].size();k++){
+				chk[out[i][k]-'a']++;
+			}
+			for(int k=0;k<out[j].size();k++){
+				chk[out[j][k]-'a']++;
+			}
+			bool flag=1;
+			for(int k=0;k<26;k++){
+				if(ashol[k]<chk[k]){
+					flag=0;
+					break;
+				}
+			}
+			if(flag){
+				tukao.push_back(out[i]+" "+out[j]);
+			}
+		}
+	}
+
+	for(int i=0;i<tukao.size();i++){
+		score=0;
+		for(int j=0;j<tukao[i].size();j++){
+			if(tukao[i][j]!=' ')
+				score+=ara[tukao[i][j]-'a'];
+		}
+		mx=max(mx,score);
+	}
+	cout<<mx<<endl;
+	for(int i=0;i<tukao.size();i++){
+		score=0;
+		for(int j=0;j<tukao[i].size();j++){
+			if(tukao[i][j]!=' ')
+				score+=ara[tukao[i][j]-'a'];
+		}
+		if(score==mx){
+			cout<<tukao[i]<<endl;
+		}
+	}
+
+	
+	
+}

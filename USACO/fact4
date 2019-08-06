@@ -1,0 +1,46 @@
+/*
+ID: tahseen1
+TASK: fact4
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll INF=100000000000;
+
+ofstream fout ("fact4.out");
+ifstream fin ("fact4.in");
+
+
+int main()
+{
+    //freopen("in.txt","r",stdin);
+
+    ll n=143;
+
+    fin>>n;
+
+    ll fac=1,n2=0,n5=0;
+
+    for(ll i=1;i<=n;i++){
+        ll gun=i;
+        while(gun%2==0){
+            gun/=2;
+            n2++;
+        }
+        while(gun%5==0){
+            gun/=5;
+            n5++;
+        }
+        fac=(fac*gun)%10;
+    }
+    for(int i=0;i<n2-n5;i++){
+        fac=(fac*2)%10;
+    }
+    fout<<fac%10<<endl;
+
+}
+
+

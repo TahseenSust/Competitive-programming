@@ -1,0 +1,100 @@
+/*
+ID: tahseen1
+TASK: shopping
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int INF=10000000;
+
+ofstream fout ("shopping.out");
+ifstream fin ("shopping.in");
+
+
+int s,n,c,k,p,b;
+vector<vector<pair<int,int>>>offer;
+vector<int>price;
+
+int mp[1500],id=0;
+pair<int,int>lagbo[7];
+
+int dp[110][6][6][6][6][6];
+
+
+int solve(int i,int a1,int a2,int a3,int a4,int a5)
+{
+    if(i==offer.size()){
+        if(a1==0 && a2==0  && a3==0  && a4==0  && a5==0) return 0;
+        return INF;
+    }
+    int &re=dp[i][a1][a2][a3][a4][a5];
+    if(re!=-1){
+        return re;
+    }
+    int tmp[6];
+    tmp[0]=a1;
+    tmp[1]=a2;
+    tmp[2]=a3;
+    tmp[3]=a4;
+    tmp[4]=a5;
+    bool flag=0;
+    for(int j=0;j<offer[i].size();j++){
+        if(tmp[offer[i][j].first]-offer[i][j].second>=0){
+            flag=1;
+            tmp[offer[i][j].first]-=offer[i][j].second;
+        }
+    }
+    re=INF;
+    if(flag==1)
+        re=price[i]+solve(i,tmp[0],tmp[1],tmp[2],tmp[3],tmp[4]);
+    re=min(re,solve(i+1,a1,a2,a3,a4,a5));
+
+    return re;
+}
+
+
+
+int main()
+{
+    //freopen("in.txt","r",stdin);
+    memset(mp,-1,sizeof mp);
+    memset(dp,-1,sizeof dp);
+
+    fin>>s;
+
+    for(int i=0;i<s;i++){
+        fin>>n;
+        vector<pair<int,int>>tmp;
+        while(n--){
+            fin>>c>>k;
+            if(mp[c]==-1) mp[c]=id++;
+            tmp.push_back({mp[c],k});
+        }
+        fin>>p;
+        price.push_back(p);
+        offer.push_back(tmp);
+    }
+
+    fin>>b;
+
+
+
+    for(int i=0;i<b;i++){
+        fin>>c>>k>>p;
+        if(mp[c]==-1) mp[c]=id++;
+        vector<pair<int,int>>tmp;
+        price.push_back(p);
+        tmp.push_back({mp[c],1});
+        offer.push_back(tmp);
+        lagbo[i].first=mp[c];
+        lagbo[mp[c]].second=k;
+    }
+    fout<<solve(0,lagbo[0].second,lagbo[1].second,lagbo[2].second,lagbo[3].second,lagbo[4].second)<<endl;
+
+
+}
+
+

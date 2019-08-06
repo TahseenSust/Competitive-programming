@@ -1,0 +1,52 @@
+/*
+ID: tahseen1
+TASK: inflate
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll INF=100000000000;
+
+ofstream fout ("inflate.out");
+ifstream fin ("inflate.in");
+
+int m,n;
+pair<int,int>score[10005];
+int dp[100000];
+
+int solve(int tot)
+{
+    if(tot==0){
+        return 0;
+    }
+
+    int &ans=dp[tot];
+
+    if(ans!=-1){
+        return ans;
+    }
+
+    ans=0;
+
+    for(int i=0;i<n;i++){
+        if(tot-score[i].second>=0)
+            ans=max(ans,score[i].first+solve(tot-score[i].second));
+    }
+    return ans;
+}
+
+int main()
+{
+    //freopen("in.txt","r",stdin);
+    fin>>m>>n;
+    for(int i=0;i<n;i++){
+        fin>>score[i].first>>score[i].second;
+    }
+    memset(dp,-1,sizeof dp);
+    fout<<solve(m)<<endl;
+}
+
+

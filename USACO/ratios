@@ -1,0 +1,92 @@
+/*
+ID: tahseen1
+TASK: ratios
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll INF=100000000000;
+
+ofstream fout ("ratios.out");
+ifstream fin ("ratios.in");
+
+int goal[5],mix[5][5];
+
+struct dt{
+    int a,b,c,d;
+}rati;
+
+void solve(int a=0,int b=0,int c=0)
+{
+    int re=INT_MAX;
+    int s=0;
+    for(int i=0;i<=100;i++){
+        for(int j=0;j<=100;j++){
+            for(int k=0;k<=100;k++){
+                a=(i*mix[0][0]+j*mix[1][0]+k*mix[2][0]);
+                b=(i*mix[0][1]+j*mix[1][1]+k*mix[2][1]);
+                c=(i*mix[0][2]+j*mix[1][2]+k*mix[2][2]);
+                int x=-1,y=-1,z=-1;
+                if(a>=goal[0]){
+                    if(goal[0]==0){
+                        if(a==0)
+                            x=0;
+                    }else if(a%goal[0]==0){
+                        x=a/goal[0];
+                    }
+                }
+                if(b>=goal[1]){
+                    if(goal[1]==0){
+                        if(b==0)
+                            y=0;
+                    }else if(b%goal[1]==0){
+                        y=b/goal[1];
+                    }
+                }
+                if(c>=goal[2]){
+                    if(goal[2]==0){
+                        if(c==0)
+                            z=0;
+                    }else if(c%goal[2]==0){
+                        z=c/goal[2];
+                    }
+                }
+                if(x!=-1 && y!=-1 && z!=-1 && ((x==y && z==0) || (x==z && y==0) || (y==z && x==0) || (x==y && y==z))){
+                    if(re>a+b+c){
+                        re=a+b+c;
+                        rati.a=i;
+                        rati.b=j;
+                        rati.c=k;
+                        rati.d=max(x,max(y,z));
+                    }
+                }
+            }
+        }
+    }
+    if(re==INT_MAX){
+        fout<<"NONE\n";
+    }else{
+        fout<<rati.a<<' '<<rati.b<<' '<<rati.c<<' '<<rati.d<<endl;
+    }
+}
+
+
+int main()
+{
+    //freopen("in.txt","r",stdin);
+    for(int i=0;i<3;i++){
+        fin>>goal[i];
+    }
+    for(int i=0;i<3;i++){
+        for(int j=0;j<3;j++){
+            fin>>mix[i][j];
+        }
+    }
+    solve();
+
+}
+
+

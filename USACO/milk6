@@ -1,0 +1,146 @@
+/*
+ID: tahseen1
+TASK: milk6
+LANG: C++14
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll INF=(1<<28);
+int dx[]={1,-1,0,0};
+int dy[]={0,0,1,-1};
+const int sz=35;
+int capacity[sz][sz];
+int rgraph[sz][sz];
+vector<int>G[sz];
+int n,m;
+
+struct edge{
+    int u,v,w,id;
+}node[1009];
+
+
+
+int bfs(int s,int t,vector<int>&parent)
+{
+	fill(parent.begin(),parent.end(),-1);
+	parent[s]=-2;
+	queue<pair<int,int>>Q;
+	Q.push({s,INF});
+
+	while(!Q.empty()){
+		int cur=Q.front().first;
+		int flow=Q.front().second;
+		Q.pop();
+
+		for(int i=0;i<G[cur].size();i++){
+			int v=G[cur][i];
+			if(parent[v]==-1 && rgraph[cur][v]){
+				parent[v]=cur;
+				flow=min(flow,rgraph[cur][v]);
+				if(v==t){
+					return flow;
+				}
+				Q.push({v,flow});
+			}
+		}
+	}
+	return 0;
+}
+
+
+
+int maxflow(int s,int t)
+{
+	int flow=0;
+	vector<int>parent(n+5);
+
+
+
+	memcpy(rgraph,capacity,sizeof rgraph);
+
+	int new_flow;
+
+	while(new_flow=bfs(s,t,parent)){
+		flow+=new_flow;
+		int cur=t;
+		while(cur!=s){
+			int pre=parent[cur];
+			rgraph[pre][cur]-=new_flow;
+			rgraph[cur][pre]+=new_flow;
+			cur=pre;
+		}
+	}
+
+
+	return flow;
+}
+
+bool cmp(edge a,edge b)
+{
+    if(a.w==b.w) return a.id<b.id;
+    return a.w>b.w;
+}
+
+
+int main()
+{
+
+    freopen("milk6.in","r",stdin);
+    freopen("milk6.out","w",stdout);
+
+	int u,v,w;
+
+	cin>>n>>m;
+
+	for(int i=0;i<m;i++){
+		cin>>u>>v>>w;
+		G[u].push_back(v);
+		capacity[u][v]+=w;
+        node[i].u=u;
+        node[i].v=v;
+        node[i].w=w;
+        node[i].id=i+1;
+	}
+
+    sort(node,node+m,cmp);
+
+	int flow=maxflow(1,n);
+
+
+
+	int tot=flow;
+
+	vector<int>mincut;
+
+
+	for(int i=0;i<m;i++)
+    {
+        if(node[i].w>flow) continue;
+        capacity[node[i].u][node[i].v]-=node[i].w;
+
+        int tmp=maxflow(1,n);
+
+        if(tot-tmp==node[i].w)
+        {
+            mincut.push_back(node[i].id);
+            tot-=node[i].w;
+        }else{
+            capacity[node[i].u][node[i].v]+=node[i].w;
+        }
+        if(tot==0){
+            break;
+        }
+    }
+
+    sort(mincut.begin(),mincut.end());
+
+    cout<<flow<<' '<<mincut.size()<<endl;
+
+    for(int i=0;i<mincut.size();i++){
+        cout<<mincut[i]<<endl;
+    }
+
+
+}

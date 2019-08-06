@@ -1,0 +1,84 @@
+/*
+ID: tahseen1
+TASK: range
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int INF=1000000000;
+
+ofstream fout ("range.out");
+ifstream fin ("range.in");
+
+
+int n;
+string field[255];
+
+
+int cal(int x,int y)
+{
+    int mx=min(n-x,n-y);
+    int m=0;
+    for(int i=x;i<x+mx;i++){
+        m=0;
+        for(int j=y;j<y+mx;j++){
+            if(field[i][j]=='1'){
+                m=(j+1)-y;
+            }else{
+                break;
+            }
+        }
+        mx=min(mx,m);
+    }
+    return mx;
+}
+
+
+
+int main()
+{
+    //freopen("in.txt","r",stdin);
+
+    fin>>n;
+
+    for(int i=1;i<=n;i++){
+        fin>>field[i];
+        field[i]="0"+field[i];
+    }
+
+    int state[255][255]={0};
+    bool vis[255][255];
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=n;j++){
+            if(field[i][j]=='1'){
+                state[i][j]=min(state[i-1][j-1],min(state[i-1][j],state[i][j-1]))+1;
+            }else{
+                state[i][j]=0;
+            }
+            //cout<<state[i][j]<<' ';
+        }
+        //cout<<endl;
+    }
+    int dp[255];
+    int mx=0;
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=n;j++){
+            mx=max(mx,state[i][j]);
+            dp[state[i][j]]++;
+        }
+    }
+
+    for(int i=mx;i>=3;i--){
+        dp[i-1]+=dp[i];
+    }
+
+    for(int i=2;i<=mx;i++){
+        fout<<i<<' '<<dp[i]<<endl;
+    }
+
+
+}
+

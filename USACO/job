@@ -1,0 +1,91 @@
+/*
+ID: tahseen1
+TASK: job
+LANG: C++14
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<int,int> pii;
+const int INF=(1<<28);
+const int MOD=1266523;
+const int sz=120,mod=100007;
+
+
+
+
+
+int start=1,a=2,b=3;
+
+vector<pii>G[70];
+
+int cost[70],flow[70][70];
+int n,m1,m2,a_typ[31],b_typ[31],tmp_a[31],tmp_b[31];
+
+
+void bfs(int n)
+{
+	vector<int>ans,ans3;
+	int l=0,h=1000,m,ans1=0,ans2=0;
+
+	for(int i=1;i<=n;i++){
+		priority_queue<pii,vector<pii>,greater<pii>>pQ;
+
+		for(int j=0;j<m1;j++){
+			pQ.push({a_typ[j],j});
+		}
+		ans.push_back(pQ.top().first);
+		ans1=max(ans1,pQ.top().first);
+		a_typ[pQ.top().second]+=tmp_a[pQ.top().second];
+	}
+
+	for(int i=1;i<=n;i++){
+		priority_queue<pii,vector<pii>,greater<pii>>pQ;
+
+		for(int j=0;j<m2;j++){
+			pQ.push({b_typ[j],j});
+		}
+		ans3.push_back(pQ.top().first);
+
+		b_typ[pQ.top().second]+=tmp_b[pQ.top().second];
+	}
+
+	sort(ans.begin(),ans.end());
+	sort(ans3.rbegin(),ans3.rend());
+
+	for(int i=0;i<ans.size();i++){
+		ans2=max(ans2,ans[i]+ans3[i]);
+	}
+	
+	
+
+	//cout<<check(14,ans)<<endl;
+	cout<<ans1<<' '<<ans2<<endl;
+}
+
+
+
+int main()
+{
+	freopen("job.in","r",stdin);
+	freopen("job.out","w",stdout);
+
+
+	cin>>n>>m1>>m2;
+
+	for(int i=0;i<m1;i++){
+		cin>>a_typ[i];
+		tmp_a[i]=a_typ[i];
+	}
+
+	for(int i=0;i<m2;i++){
+		cin>>b_typ[i];
+		tmp_b[i]=b_typ[i];
+	}
+
+
+	bfs(n);
+
+
+}

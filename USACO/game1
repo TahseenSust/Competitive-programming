@@ -1,0 +1,76 @@
+/*
+ID: tahseen1
+TASK: game1
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int INF=1000000000;
+
+ofstream fout ("game1.out");
+ifstream fin ("game1.in");
+
+int dp[105][105];
+int dp2[105][200*105];
+
+int a[205],n;
+
+int solve(int i,int j)
+{
+    if(i>j) return 0;
+
+    int &re=dp[i][j];
+
+    if(re!=-1) return re;
+
+    re=INT_MIN;
+
+    re=max(re,a[i]-solve(i+1,j));
+    re=max(re,a[j]-solve(i,j-1));
+
+    return re;
+}
+
+
+
+
+int solve2(int i,int sum,int d,int total)
+{
+    if(i==n){
+        if(sum-(total-sum)==d){
+            return sum;
+        }
+        return INT_MIN;
+    }
+    int &re=dp2[i][sum];
+    if(re!=-1){
+        return re;
+    }
+    int p=solve2(i+1,sum+a[i],d,total);
+    int q=solve2(i+1,sum,d,total);
+    return re=max(p,q);
+}
+
+int main()
+{
+    //freopen("in.txt","r",stdin);
+    fin>>n;
+    int total=0;
+    for(int i=0;i<n;i++){
+        fin>>a[i];
+        total+=a[i];
+    }
+    memset(dp,-1,sizeof dp);
+    memset(dp2,-1,sizeof dp2);
+    int d=solve(0,n-1);
+    int p=solve2(0,0,d,total);
+
+    fout<<p<<' '<<total-p<<endl;
+
+
+}
+
+//3 4 2 1 5 6 7 8

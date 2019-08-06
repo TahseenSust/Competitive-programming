@@ -1,0 +1,55 @@
+/*
+ID: tahseen1
+TASK: spin
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int INF=1000000000;
+
+ofstream fout ("spin.out");
+ifstream fin ("spin.in");
+
+
+int main()
+{
+    //freopen("in.txt","r",stdin);
+
+    pair<int,int>info1[6];
+    pair<int,int>info2[6][6];
+    for(int i=0;i<5;i++){
+        fin>>info1[i].first;
+        fin>>info1[i].second;
+        for(int j=0;j<info1[i].second;j++){
+            fin>>info2[i][j].first>>info2[i][j].second;
+        }
+    }
+
+
+    int cnt[400];
+    for(int t=0;t<360;t++){
+        memset(cnt,0,sizeof cnt);
+        for(int i=0;i<5;i++){
+            int s=t*info1[i].first;
+            for(int j=0;j<info1[i].second;j++){
+
+                for(int k=s+info2[i][j].first;k<=s+info2[i][j].first+info2[i][j].second;k++){
+                    cnt[k%360]++;
+                    if(cnt[k%360]==5){
+                        fout<<t<<endl;
+                        return 0;
+                    }
+
+                }
+            }
+        }
+    }
+
+    fout<<"none\n";
+
+}
+
+//3 4 2 1 5 6 7 8

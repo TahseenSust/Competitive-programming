@@ -1,0 +1,58 @@
+/*
+ID: tahseen1
+TASK: humble
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll INF=100000000000;
+
+ofstream fout ("humble.out");
+ifstream fin ("humble.in");
+
+
+
+int main()
+{
+    //freopen("in.txt","r",stdin);
+    ll k,n,primes[105];
+
+    fin>>k>>n;
+
+    for(int i=0;i<k;i++){
+        fin>>primes[i];
+
+    }
+
+    ll last=1;
+    ll startidx[105]={0};
+    ll result[100005]={0};
+    result[0]=1;
+    for(int i=1;i<=n;i++){
+        ll mn=INF,next;
+        for(int j=0;j<k;j++){
+            for(int l=startidx[j];l<i;l++){
+                next=primes[j]*result[l];
+                if(next<=last){
+                    continue;
+                }
+                if(next<mn){
+                    mn=next;
+                }
+                startidx[j]=l;
+                break;
+            }
+        }
+        //cout<<mn<<endl;
+        result[i]=mn;
+        last=mn;
+    }
+
+    fout<<result[n]<<endl;
+
+}
+
+

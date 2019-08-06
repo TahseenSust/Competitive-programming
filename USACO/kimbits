@@ -1,0 +1,63 @@
+/*
+ID: tahseen1
+TASK: kimbits
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll INF=100000000000;
+
+ofstream fout ("kimbits.out");
+ifstream fin ("kimbits.in");
+
+
+ll n=5,o=3,l=19;
+ll dp[33][33];
+bool vis[33][33];
+ll solve(ll pos,ll cnt)
+{
+    if(pos==n){
+        return dp[pos][cnt]=1;
+    }
+
+    ll &re=dp[pos][cnt];
+    if(re!=-1){
+       return re;
+    }
+    re=solve(pos+1,cnt);
+    if(cnt<o){
+        re+=solve(pos+1,cnt+1);
+    }
+    return re;
+}
+
+void path(ll pos,ll cnt,ll c)
+{
+    if(pos==n)
+        return;
+    //cout<<dp[pos+1][cnt]<<' '<<dp[pos+1][cnt+1]<<' '<<c<<endl;
+    if(dp[pos+1][cnt]>=c || cnt==o){
+        fout<<0;
+        path(pos+1,cnt,c);
+    }else{
+        fout<<1;
+        path(pos+1,cnt+1,c-dp[pos+1][cnt]);
+    }
+}
+
+int main()
+{
+    //freopen("in.txt","r",stdin);
+    fin>>n>>o>>l;
+    memset(dp,-1,sizeof dp);
+    ll ans=solve(0,0);
+    path(0,0,l);
+    fout<<endl;
+
+
+}
+
+

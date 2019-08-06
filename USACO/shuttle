@@ -1,0 +1,204 @@
+/*
+ID: tahseen1
+TASK: shuttle
+LANG: C++14
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<int,int> pii;
+const int INF=(1<<28);
+const int MOD=1266523;
+
+string str;
+
+bool check(int n,string ss)
+{
+    for(int i=0;i<n;i++){
+        if(ss[i]!='B') return false;
+    }
+    for(int i=ss.size()-1;i>=ss.size()-n;i--){
+        if(ss[i]!='W') return false;
+    }
+    return true;
+}
+
+struct data
+{
+    int tree[3];
+    int complete;
+}trie[564869];
+
+string text;
+
+int tot_node=0;
+
+int val(char ch)
+{
+    if(ch=='W') return 1;
+    if(ch=='B') return 2;
+    if(ch==' ') return 3;
+}
+
+void Insert_trie(int node,int ind)
+{
+    if(text[ind]=='\0')
+    {
+        trie[node].complete=1;
+        return;
+    }
+    int id=val(text[ind]);
+    if(trie[node].tree[id]==-1) trie[node].tree[id]=++tot_node;
+    int nnode=trie[node].tree[id];
+    Insert_trie(nnode,ind+1);
+}
+
+bool Search_Trie(int node,int ind)
+{
+	if(text[ind]=='\0')
+	{
+		return trie[node].complete==1;
+	}
+	int id=val(text[ind]);
+    if(trie[node].tree[id]==-1) return false;
+    int nnode=trie[node].tree[id];
+    return Search_Trie(nnode,ind+1);
+}
+
+
+vector<int>stans;
+
+map<string,vector<int> >flag;
+int cnt=0;
+
+vector<int> solve(int n,string tmp,vector<int> ans)
+{
+    //cout<<tmp<<endl;
+    //getchar();
+
+    memset(trie,-1,sizeof trie);
+
+
+    string ss=tmp;
+    queue<pair<string,vector<int>> >Q;
+
+    Q.push({tmp,ans});
+
+    while(!Q.empty()){
+        cnt++;
+        text=Q.front().first;
+
+        //cout<<text<<endl;
+        //cout<<tot_node<<endl;
+
+        if(check(n,text)){
+            return Q.front().second;
+        }
+
+
+        ans=Q.front().second;
+
+        Q.pop();
+
+
+        for(int i=0;i<2*n+1;i++)
+        {
+            if(i<2*n){
+                if(text[i+1]==' ' && text[i]=='W'){
+                    swap(text[i],text[i+1]);
+
+                    if(Search_Trie(0,0)!=1){
+                        ans.push_back(i+1);
+                        Insert_trie(0,0);
+                        Q.push({text,ans});
+                        ans.pop_back();
+                    }
+                    swap(text[i],text[i+1]);
+                }
+            }
+            if(i>0 && text[i]=='B'){
+                if(text[i-1]==' '){
+                    swap(text[i],text[i-1]);
+                    if(Search_Trie(0,0)!=1){
+                        ans.push_back(i+1);
+                        Insert_trie(0,0);
+                        Q.push({text,ans});
+                        ans.pop_back();
+                    }
+                    swap(text[i],text[i-1]);
+                }
+            }
+            if(i<2*n-1 && text[i]=='W'){
+                if(text[i+2]==' ' && text[i+1]=='B'){
+                    swap(text[i],text[i+2]);
+                    if(Search_Trie(0,0)!=1){
+                        ans.push_back(i+1);
+                        Insert_trie(0,0);
+                        Q.push({text,ans});
+                        ans.pop_back();
+                    }
+                    swap(text[i],text[i+2]);
+                }
+            }
+            if(i>1 && text[i]=='B'){
+                if(text[i-2]==' ' && text[i-1]=='W'){
+                    swap(text[i],text[i-2]);
+                    if(Search_Trie(0,0)!=1){
+                        ans.push_back(i+1);
+                        Insert_trie(0,0);
+                        Q.push({text,ans});
+                        ans.pop_back();
+                    }
+                    swap(text[i],text[i-2]);
+                }
+            }
+        }
+    }
+}
+
+
+int main()
+{
+    freopen("shuttle.in","r",stdin);
+	freopen("shuttle.out","w",stdout);
+
+
+    int n=12;
+
+
+    cin>>n;
+
+    for(int i=0;i<n;i++){
+        str+="W";
+    }
+    str+=" ";
+    for(int i=0;i<n;i++){
+        str+="B";
+    }
+
+    vector<int>v;
+
+    v=solve(n,str,v);
+
+
+
+
+
+    for(int i=0,j=1;i<v.size();i++){
+        cout<<v[i];
+
+        if(j==20 || i==v.size()-1){
+            cout<<endl;
+            j=0;
+        }else{
+            cout<<' ';
+        }
+        j++;
+    }
+
+
+
+
+
+}

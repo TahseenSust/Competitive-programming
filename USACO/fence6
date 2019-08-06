@@ -1,0 +1,116 @@
+/*
+ID: tahseen1
+TASK: fence6
+LANG: C++14
+*/
+
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<int,int> pii;
+const int INF=1<<30;
+int n,len[105];
+vector<int>obay[105],hobay[105];
+vector<pair<int,int>>G[105];
+
+ofstream fout ("fence6.out");
+ifstream fin ("fence6.in");
+
+int djkstra(int s,int d)
+{
+	int dis[105];
+	memset(dis,31,sizeof dis);
+
+	priority_queue<pii,vector<pii>,greater<pii>>pQ;
+	pQ.push({0,s});
+	dis[s]=0;
+	while(!pQ.empty()){
+		pii tmp=pQ.top();
+		pQ.pop();
+		for(int i=0;i<G[tmp.second].size();i++){
+			int v=G[tmp.second][i].first;
+			if(dis[v]>G[tmp.second][i].second+tmp.first){
+				dis[v]=G[tmp.second][i].second+tmp.first;
+				pQ.push({dis[v],v});
+			}
+		}
+	}
+	for(int i=1;i<8;i++){
+		cout<<dis[i]<<' ';
+	}
+	cout<<endl;
+	return dis[d];
+}
+
+
+
+
+
+int main(int argc, char const *argv[])
+{
+	int id,v,q1,q2,u;
+	
+
+	cin>>n;
+	
+	for(int i=1;i<=n;i++){
+		cin>>id;
+		cin>>len[id]>>q1>>q2;
+		while(q1--){
+			cin>>v;
+			obay[id].push_back(v);
+		}
+		while(q2--){
+			cin>>v;
+			hobay[id].push_back(v);
+		}
+		sort(obay[id].begin(),obay[id].end());
+		sort(hobay[id].begin(),hobay[id].end());
+	}
+	int ou[105]={0},hou[105]={};
+
+	id=1;
+
+	for(int i=1;i<=n;i++){
+		if(ou[i]==0){
+			ou[i]=id;
+			id++;
+		}
+		for(int j=0;j<obay[i].size();j++){
+			u=obay[i][j];
+			if(binary_search(obay[u].begin(),obay[u].end(),i)){
+				ou[u]=ou[i];
+			}else{
+				hou[u]=ou[i];
+			}
+		}
+		if(hou[i]==0){
+			hou[i]=id;
+			id++;
+		}
+		for(int j=0;j<hobay[i].size();j++){
+			u=hobay[i][j];
+			if(binary_search(obay[u].begin(),obay[u].end(),i)){
+				ou[u]=hou[i];
+			}else{
+				hou[u]=hou[i];
+			}
+		}
+		u=ou[i],v=hou[i];
+		G[u].push_back({v,len[i]});
+		G[v].push_back({u,len[i]});
+	}
+	int ans=INF;
+	for(int i=1;i<id;i++){
+		for(int j=0;j<G[i].size();j++){
+			int tmp=G[i][j].second;
+			G[i][j].second=INF;
+			ans=min(ans,djkstra(i,G[i][j].first)+tmp);
+			//cout<<v.first<<endl;
+			G[i][j].second=tmp;
+		}
+	}
+	cout<<ans<<endl;
+
+
+}

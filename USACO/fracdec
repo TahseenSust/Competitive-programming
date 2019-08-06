@@ -1,0 +1,102 @@
+/*
+ID: tahseen1
+TASK: fracdec
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+ofstream fout ("fracdec.out");
+ifstream fin ("fracdec.in");
+
+
+
+int main()
+{
+    int a,b;
+    fin>>a>>b;
+    string ans="";
+    bool flag=0;
+    for(int i=1;i<=100000;i++){
+        if(a/b==0 && flag==0){
+            flag=1;
+            if(ans.size()==0) ans+='0';
+            ans+='.';
+        }
+        if(flag){
+            a=a*10;
+        }
+
+        int x=(a)/b;
+        if(flag==0){
+            while(x ){
+                ans+=((x%10)+'0');
+                x/=10;
+            }
+        }else{
+            ans+=((x)+'0');
+        }
+        if(flag==0){
+            reverse(ans.begin(),ans.end());
+        }
+        if(a%b==0) break;
+        x=a/b;
+        a=a-b*x;
+    }
+    if(flag==0){
+        ans+=".0";
+    }
+    int b1=-1,b2=-1;
+    for(int i=0;i<76 && b1==-1;i++){
+        for(int j=i+1;j<ans.size();j++){
+            int x=i,y=j;
+            while(ans[x]==ans[y] && x<j){
+                x++;
+                y++;
+            }
+            if(x==j){
+                bool f=1;
+                for(int k=j+(j-i);k<1000;k+=(j-i)){
+                    if(k+(j-i)>=ans.size()){
+                        f=0;
+                        break;
+                    }
+                    x=i,y=k;
+                    while(ans[x]==ans[y] && x<j){
+                        x++;
+                        y++;
+                    }
+                    if(x!=j){
+                        f=0;
+                        break;
+                    }
+                }
+                if(f==1){
+                    b1=i;b2=j;
+                    break;
+                }
+            }
+        }
+    }
+    if(b1!=-1){
+        for(int i=0;i<ans.size() && i<b2;i++){
+            if(i==b1){
+                fout<<"(";
+            }
+            if((i+1)%76==0) fout<<endl;
+            fout<<ans[i];
+
+        }
+        fout<<")";
+    }else{
+        for(int i=0;i<ans.size() && i<76;i++){
+            fout<<ans[i];
+        }
+    }
+    fout<<endl;
+}
+
+

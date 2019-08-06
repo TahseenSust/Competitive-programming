@@ -1,0 +1,54 @@
+/*
+ID: tahseen1
+TASK: stamps
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll INF=100000000000;
+
+ofstream fout ("stamps.out");
+ifstream fin ("stamps.in");
+
+int n,k,stamp[205];
+
+int dp[2000000];
+
+int main()
+{
+    //freopen("in.txt","r",stdin);
+    fin>>k>>n;
+
+    for(int i=0;i<n;i++){
+        fin>>stamp[i];
+    }
+    sort(stamp,stamp+n);
+    bool flag=1;
+    int cap=1;
+    memset(dp,31,sizeof dp);
+    dp[0]=0;
+    while(1){
+        flag=0;
+        for(int i=0;i<n;i++){
+            if(cap-stamp[i]<0){
+                break;
+            }else{
+                if(dp[cap-stamp[i]]<k){
+                    flag=1;
+                    dp[cap]=min(dp[cap],dp[cap-stamp[i]]+1);
+                }
+            }
+        }
+        if(!flag){
+            break;
+        }
+        //cout<<dp[cap]<<endl;
+        cap++;
+    }
+    fout<<cap-1<<endl;
+}
+
+

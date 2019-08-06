@@ -1,0 +1,96 @@
+/*
+ID: tahseen1
+TASK: cowtour
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll INF=1000000000;
+
+ofstream fout ("cowtour.out");
+ifstream fin ("cowtour.in");
+
+double G[155][155];
+bool con[155][155];
+bool vis[155];
+double max_dis[155];
+
+
+
+int main()
+{
+    //freopen("in.txt","r",stdin);
+    for(int i=0;i<155;i++){
+        for(int j=0;j<155;j++){
+            G[i][j]=1e15;
+        }
+        G[i][i]=0;
+    }
+    double x[155],y[155];
+    int n;
+    fin>>n;
+    for(int i=0;i<n;i++){
+        fin>>x[i]>>y[i];
+    }
+    string str;
+    for(int i=0;i<n;i++){
+        fin>>str;
+        con[i][i]=1;
+        max_dis[i]=-1;
+        for(int j=0;j<n;j++){
+            if(str[j]=='1'){
+                con[i][j]=1;
+                double dis=sqrt((x[i]-x[j])*(x[i]-x[j])+(y[i]-y[j])*(y[i]-y[j]));
+                G[i][j]=dis;
+                G[j][i]=dis;
+            }
+        }
+    }
+
+
+    for(int k=0;k<n;k++){
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(G[i][k]+G[k][j]<G[i][j]){
+                    G[i][j]=G[i][k]+G[k][j];
+                }
+            }
+        }
+    }
+
+
+
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(G[i][j]<1e12){
+                max_dis[i]=max(max_dis[i],G[i][j]);
+            }
+        }
+
+    }
+    double diameter[155]={0};
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(G[i][j]<1e12){
+                diameter[i]=max(diameter[i],max_dis[j]);
+            }
+        }
+    }
+
+    double ans=1e15;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(G[i][j]>1e12){
+                int u=i,v=j;
+                double dis=sqrt((x[u]-x[v])*(x[u]-x[v])+(y[u]-y[v])*(y[u]-y[v]));
+                ans=min(ans,max((max_dis[u]+max_dis[v]+dis),max(diameter[u],diameter[v])));
+            }
+        }
+    }
+    fout<<setprecision(6)<<fixed<<ans<<endl;
+}
+
+

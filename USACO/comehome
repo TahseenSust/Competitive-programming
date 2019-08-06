@@ -1,0 +1,92 @@
+/*
+ID: tahseen1
+TASK: comehome
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll INF=1000000000;
+
+ofstream fout ("comehome.out");
+ifstream fin ("comehome.in");
+
+int dis[10005];
+vector<pair<int,int>>G[10005];
+
+int n,k,d;
+
+map<char,int>mp;
+
+void djkstra(int source)
+{
+    for(int i=0;i<=10000;i++)
+        dis[i]=INF;
+
+
+    priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>>pQ;
+    pQ.push({0,source});
+    dis[source]=0;
+
+    while(!pQ.empty()){
+
+        int u=pQ.top().second;
+        int w=pQ.top().first;
+        pQ.pop();
+        for(int i=0;i<G[u].size();i++){
+            int v=G[u][i].first;
+            int cost=G[u][i].second;
+
+            if(dis[v]>dis[u]+cost){
+                dis[v]=dis[u]+cost;
+                pQ.push({dis[v],v});
+            }
+        }
+    }
+
+}
+
+
+
+int main()
+{
+    //freopen("out.txt","w",stdout);
+    char u,v;
+
+    fin>>n;
+    vector<char>cow;
+    int source;
+    for(int i=0;i<n;i++){
+        fin>>u>>v>>d;
+        if(!islower(u)){
+            cow.push_back(u);
+        }
+        if(!islower(v)){
+            cow.push_back(v);
+        }
+        if(mp.find(u)==mp.end()) mp[u]=k++;
+        if(mp.find(v)==mp.end()) mp[v]=k++;
+
+
+        G[mp[u]].push_back(make_pair(mp[v],d));
+        G[mp[v]].push_back(make_pair(mp[u],d));
+    }
+
+    djkstra(mp['Z']);
+    int ans1=INF;
+    char ans2;
+
+    for(auto x:cow){
+        if(dis[mp[x]]<ans1 && x!='Z'){
+            ans1=dis[mp[x]];
+            ans2=x;
+        }
+    }
+
+    fout<<ans2<<' '<<ans1<<endl;
+
+}
+
+

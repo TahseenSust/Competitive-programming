@@ -1,0 +1,161 @@
+/*
+ID: tahseen1
+TASK: msquare
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll INF=100000000000;
+
+ofstream fout ("msquare.out");
+ifstream fin ("msquare.in");
+
+
+
+inline int A(int a)
+{
+    int v[10],indx=7;
+    while(a){
+        v[indx]=(a%10);
+        indx--;
+        a/=10;
+    }
+    int tmp[10];
+    for(int i=0;i<4;i++){
+        tmp[4+i]=v[i];
+    }
+    for(int i=4;i<8;i++){
+        tmp[i-4]=v[i];
+    }
+    a=0;
+    for(int i=0;i<8;i++){
+        a=a*10+tmp[i];
+    }
+    return a;
+}
+
+inline int B(int a)
+{
+    int v[10],indx=7;
+    while(a){
+        v[indx]=(a%10);
+        indx--;
+        a/=10;
+    }
+    int tmp[10];
+    for(int i=1;i<4;i++){
+        tmp[i]=v[i-1];
+    }
+    for(int i=5;i<8;i++){
+        tmp[i]=v[i-1];
+    }
+    tmp[0]=v[3];
+    tmp[4]=v[7];
+    a=0;
+    for(int i=0;i<8;i++){
+        a=a*10+tmp[i];
+    }
+    return a;
+}
+
+inline int C(int a)
+{
+    int v[10],tmp[10],indx=7;
+    while(a){
+        v[indx]=tmp[indx]=(a%10);
+        indx--;
+        a/=10;
+    }
+    tmp[1]=v[5];
+    tmp[2]=v[1];
+    tmp[5]=v[6];
+    tmp[5]=v[6];
+    tmp[6]=v[2];
+    a=0;
+    for(int i=0;i<8;i++){
+        a=a*10+tmp[i];
+    }
+    return a;
+}
+
+struct dt{
+    int v;
+    string ans;
+};
+
+map<int,bool>mp;
+
+int main()
+{
+    //freopen("in.txt","r",stdin);
+    vector<int>target;
+    int init=12348765;
+    int x;
+    target.resize(8);
+    for(int i=0;i<4;i++){
+        fin>>x;
+        target[i]=x;
+    }
+    for(int i=7;i>=4;i--){
+        fin>>x;
+        target[i]=x;
+    }
+    int tar=0;
+    for(auto a:target){
+        tar=tar*10+a;
+    }
+    dt edge;
+    queue<dt>Q;
+    edge.v=init;
+    edge.ans="";
+    Q.push(edge);
+    mp[edge.v]=1;
+    while(!Q.empty()){
+
+        edge=Q.front();
+        Q.pop();
+        if(edge.v==tar){
+            fout<<edge.ans.size()<<endl;
+            for(int i=0;i<edge.ans.size();i++){
+                fout<<edge.ans[i];
+                if(i+1!=edge.ans.size() && (i+1)%60==0){
+                    fout<<endl;
+                }
+            }
+            fout<<endl;
+            return 0;
+        }
+        dt tmp;
+
+        tmp.v=A(edge.v);
+        tmp.ans=edge.ans+"A";
+
+        if(mp.find(tmp.v)==mp.end()){
+            mp[tmp.v]=1;
+            Q.push(tmp);
+        }
+
+        tmp.v=B(edge.v);
+        tmp.ans=edge.ans+"B";
+
+        if(mp.find(tmp.v)==mp.end()){
+            mp[tmp.v]=1;
+            Q.push(tmp);
+        }
+
+        tmp.v=C(edge.v);
+        tmp.ans=edge.ans+"C";
+        if(mp.find(tmp.v)==mp.end()){
+            mp[tmp.v]=1;
+            Q.push(tmp);
+        }
+
+    }
+
+
+}
+
+//3 4 2 1 5 6 7 8

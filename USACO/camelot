@@ -1,0 +1,214 @@
+/*
+ID: tahseen1
+TASK: camelot
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int INF=10000000;
+
+ofstream fout ("camelot.out");
+ifstream fin ("camelot.in");
+
+int dx[]={1,-1,-2,-2,1,-1,2,2};
+int dy[]={2,2,1,-1,-2,-2,1,-1};
+
+int king_x[]={1,-1,0,0,1,-1,1,-1};
+int king_y[]={0,0,1,-1,1,-1,-1,1};
+
+int k_x,k_y;
+int n,m;
+int dis[35][35];
+int dis_king[35][35];
+pair<int,int>cor_king;
+vector<pair<int,int>>cor_knight;
+
+
+void bfs_king(int x,int y)
+{
+    bool visit[32][32]={0};
+    queue<pair<int,int>>Q;
+    Q.push({x,y});
+    visit[x][y]=1;
+
+    while(!Q.empty()){
+        pair<int,int>cor=Q.front();
+        Q.pop();
+
+        for(int i=0;i<8;i++){
+            int vx=cor.first+king_x[i];
+            int vy=cor.second+king_y[i];
+            if(vx>=1 && vx<=n && vy>=1 && vy<=m && visit[vx][vy]==0){
+                visit[vx][vy]=1;
+                dis_king[vx][vy]=1+dis_king[cor.first][cor.second];
+                Q.push({vx,vy});
+            }
+        }
+    }
+}
+
+int vis[35][35];
+
+struct dt{
+    int x,y,c;
+};
+
+struct mdt{
+    int x,y,c,t;
+};
+
+void bfs(int x,int y,int k)
+{
+    queue<dt>Q;
+    Q.push({x,y,0});
+    vis[x][y]=k;
+    while(!Q.empty()){
+        dt cor=Q.front();
+        Q.pop();
+        for(int i=0;i<8;i++){
+            int vx=cor.x+dx[i],vy=cor.y+dy[i];
+            if(vx>=1 && vy>=1 && vx<=n && vy<=m && vis[vx][vy]!=k){
+                vis[vx][vy]=k;
+                dis[vx][vy]+=(1+cor.c);
+                Q.push({vx,vy,1+cor.c});
+            }
+        }
+    }
+}
+
+void neg_bfs(int x,int y,int k)
+{
+    queue<dt>Q;
+    Q.push({x,y,0});
+    vis[x][y]=k;
+    while(!Q.empty()){
+        dt cor=Q.front();
+        Q.pop();
+        for(int i=0;i<8;i++){
+            int vx=cor.x+dx[i],vy=cor.y+dy[i];
+            if(vx>=1 && vy>=1 && vx<=n && vy<=m && vis[vx][vy]!=k){
+                vis[vx][vy]=k;
+                dis[vx][vy]-=(1+cor.c);
+                Q.push({vx,vy,1+cor.c});
+            }
+        }
+    }
+}
+
+void add_bfs(int x,int y,int k)
+{
+    queue<dt>Q;
+    Q.push({x,y,0});
+    vis[x][y]=k;
+    while(!Q.empty()){
+        dt cor=Q.front();
+        Q.pop();
+        for(int i=0;i<8;i++){
+            int vx=cor.x+dx[i],vy=cor.y+dy[i];
+            if(vx>=1 && vy>=1 && vx<=n && vy<=m && vis[vx][vy]!=k){
+                vis[vx][vy]=k;
+                dis[vx][vy]+=(1+cor.c);
+                Q.push({vx,vy,1+cor.c});
+            }
+        }
+    }
+}
+
+
+
+void print()
+{
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            cout<<dis[i][j]<<' ';
+        }
+        cout<<endl;
+    }
+}
+
+int main()
+{
+    //freopen("in.txt","r",stdin);
+    fin>>m>>n;
+
+    char ch;
+    int y;
+    fin>>ch>>y;
+    cor_king.first=ch-'A'+1;
+    cor_king.second=y;
+    while(fin>>ch>>y){
+        cor_knight.push_back({(int)ch-'A'+1,y});
+    }
+    bfs_king(cor_king.first,cor_king.second);
+
+    for(int i=0;i<cor_knight.size();i++)
+    {
+        bfs(cor_knight[i].first,cor_knight[i].second,i+1);
+    }
+
+    int ans=INT_MAX;
+
+    for(int i=0;i<cor_knight.size();i++){
+        memset(vis,0,sizeof vis);
+        int x=cor_knight[i].first,y=cor_knight[i].second;
+
+        neg_bfs(x,y,i+1);
+//        print();
+//        cout<<endl;
+        queue<mdt>Q;
+
+        //cout<<dis[x][y]<<endl;
+        //if(dis[x][y]==0) cout<<x<<' '<<y<<endl;
+        Q.push({x,y,0,0});
+        Q.push({x,y,dis_king[x][y],1});
+
+        int visit[35][35][3]={0};
+        memset(visit,31,sizeof visit);
+        visit[x][y][0]=1;
+        visit[x][y][1]=dis_king[x][y];
+        while(!Q.empty()){
+            mdt u=Q.front();
+            Q.pop();
+//            if(i==2 && u.x==2 && u.y==5){
+//                cout<<"here"<<endl;
+//                cout<<u.t<<endl;
+//                cout<<u.c<<endl;
+//            }
+            if(u.t){
+                ans=min(ans,dis[u.x][u.y]+u.c);
+            }
+            for(int j=0;j<8;j++){
+                int vx=u.x+dx[j],vy=u.y+dy[j];
+                if(vx>=1 && vx<=n && vy>=1 && vy<=m && visit[vx][vy][u.t]>u.c+1){
+                    visit[vx][vy][u.t]=u.c+1;
+                    Q.push({vx,vy,u.c+1,u.t});
+                    if(u.t==0){
+                        visit[vx][vy][1]=u.c+1+dis_king[vx][vy];
+//                        if(dis_king[vx][vy]==0){
+//                            cout<<vx<<' '<<vy<<endl;
+//                            cout<<u.t<<endl;
+//                            cout<<u.c+1+dis_king[vx][vy]<<endl;
+//                        }
+                        Q.push({vx,vy,u.c+1+dis_king[vx][vy],1});
+                    }
+                }
+            }
+        }
+
+
+
+
+        memset(vis,0,sizeof vis);
+        add_bfs(cor_knight[i].first,cor_knight[i].second,i+1);
+    }
+    if(ans==INT_MAX) ans=0;
+    //cout<<n<<' '<<m<<endl;
+    fout<<ans<<endl;
+
+}
+
+

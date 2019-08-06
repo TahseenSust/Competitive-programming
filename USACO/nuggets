@@ -1,0 +1,62 @@
+/*
+ID: tahseen1
+TASK: nuggets
+LANG: C++14
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int INF=10000000;
+
+
+ofstream fout ("nuggets.out");
+ifstream fin ("nuggets.in");
+
+int dp[1000005];
+
+int main()
+{
+    int n,ara[11];
+
+    fin>>n;
+
+    for(int i=0;i<n;i++){
+        fin>>ara[i];
+    }
+
+    int g=ara[0];
+
+    for(int i=1;i<n;i++){
+        g=__gcd(g,ara[i]);
+    }
+
+
+
+    int ans=0;
+    if(g==1){
+        dp[0]=1;
+
+        for(int i=0;i<n;i++){
+            for(int j=ara[i];j<=1000000;j++){
+                dp[j]|=dp[j-ara[i]];
+            }
+        }
+
+        for(int i=1000000;i>=0;i--){
+            if(dp[i]==0){
+                ans=i;
+                break;
+            }
+        }
+    }
+
+    fout<<ans<<endl;
+
+
+
+}
+
+
+

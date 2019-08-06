@@ -1,0 +1,91 @@
+/*
+ID: tahseen1
+TASK: ditch
+LANG: C++14
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll INF=100000000;
+int dx[]={1,-1,0,0};
+int dy[]={0,0,1,-1};
+
+ofstream fout ("ditch.out");
+ifstream fin ("ditch.in");
+
+ll capacity[500][500];
+vector<int>G[500];
+int n,m;
+
+ll bfs(int s,int t,vector<int>&parent)
+{
+	fill(parent.begin(),parent.end(),-1);
+	parent[s]=-2;
+	queue<pair<int,ll>>Q;
+	Q.push({s,INF});
+
+	while(!Q.empty()){
+		int cur=Q.front().first;
+		ll flow=Q.front().second;
+		Q.pop();
+
+		for(int i=0;i<G[cur].size();i++){
+			int v=G[cur][i];
+			//cout<<cur<<' '<<v<<' '<<parent[v]<<endl;
+			if(parent[v]==-1 && capacity[cur][v]){
+				parent[v]=cur;
+
+				flow=min(flow,capacity[cur][v]);
+				if(v==t){
+					return flow;
+				}
+				Q.push({v,flow});
+			}
+		}
+	}
+	return 0;
+}
+
+int maxflow(int s,int t)
+{
+	ll flow=0;
+	vector<int>parent(n+m+5);
+
+	ll new_flow;
+
+	while(new_flow=bfs(s,t,parent)){
+		flow+=new_flow;
+		int cur=t;
+		while(cur!=s){
+
+			int pre=parent[cur];
+			capacity[pre][cur]-=new_flow;
+			capacity[cur][pre]+=new_flow;
+			cur=pre;
+		}
+	}
+	return flow;
+}
+
+
+
+int main()
+{
+	int u,v,w;
+
+	fin>>m>>n;
+
+	for(int i=1;i<=m;i++){
+		fin>>u>>v>>w;
+		G[u].push_back(v);
+		G[v].push_back(u);
+		capacity[u][v]+=w;
+
+	}
+
+
+	fout<<maxflow(1,n)<<endl;
+
+
+}
