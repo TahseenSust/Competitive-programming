@@ -1,0 +1,59 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+int MOD=10000;
+
+struct matrix{
+    int v[10][10],row,col;
+};
+
+
+matrix multiply(const matrix &A,const matrix &B)
+{
+    matrix r;
+    r.row = A.row;
+    r.col = B.col;
+
+    for(int i=0;i<r.row;i++){
+        for(int j=0;j<r.col;j++){
+            int sum=0;
+            for(int k=0;k<A.col;k++){
+                sum+=(A.v[i][k]*B.v[k][j]);
+                sum%=MOD;
+            }
+            r.v[i][j]=sum;
+        }
+    }
+    return r;
+}
+
+string binary(int n)
+{
+    string ret="";
+    while(n){
+        ret+=((n%2==0)?"0":"1");
+        n/=2;
+    }
+    reverse(ret.begin(),ret.end());
+    return ret;
+}
+
+
+matrix power(matrix A,int p)
+{
+    string bin=binary(p);
+    matrix ret=A;
+    for(int i=1;i<bin.size();i++){
+        ret=multiply(ret,ret);
+        if(bin[i]=='1'){
+            ret=multiply(ret,A);
+        }
+    }
+    return ret;
+}
+
+int main()
+{
+
+
+}

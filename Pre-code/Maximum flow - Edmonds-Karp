@@ -1,0 +1,78 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll INF=(1<<28);
+int dx[]={1,-1,0,0};
+int dy[]={0,0,1,-1};
+const int sz=105;
+int capacity[sz][sz];
+vector<int>G[sz];
+int n,m;
+
+int bfs(int s,int t,vector<int>&parent)
+{
+	fill(parent.begin(),parent.end(),-1);
+	parent[s]=-2;
+	queue<pair<int,int>>Q;
+	Q.push({s,INF});
+
+	while(!Q.empty()){
+		int cur=Q.front().first;
+		int flow=Q.front().second;
+		Q.pop();
+
+		for(int i=0;i<G[cur].size();i++){
+			int v=G[cur][i];
+			if(parent[v]==-1 && capacity[cur][v]){
+				parent[v]=cur;
+				flow=min(flow,capacity[cur][v]);
+				if(v==t){
+					return flow;
+				}
+				Q.push({v,flow});
+			}
+		}
+	}
+	return 0;
+}
+
+int maxflow(int s,int t)
+{
+	int flow=0;
+	vector<int>parent(n);
+
+	int new_flow;
+
+	while(new_flow=bfs(s,t,parent)){
+		flow+=new_flow;
+		int cur=t;
+		while(cur!=s){
+			int pre=parent[cur];
+			capacity[pre][cur]-=new_flow;
+			capacity[cur][pre]+=new_flow;
+			cur=pre;
+		}
+	}
+	return flow;
+}
+
+
+
+int main()
+{
+	int u,v,w;
+
+	cin>>n>>m;
+
+	for(int i=0;i<m;i++){
+		cin>>u>>v>>w;
+		G[u].push_back(v);
+		G[v].push_back(u);
+
+		capacity[u][v]+=w;
+	}
+
+	cout<<maxflow(0,5)<<endl;
+
+
+}

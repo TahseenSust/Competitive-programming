@@ -1,0 +1,240 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+#define xx         first
+#define yy         second
+#define pb         push_back
+#define mp         make_pair
+#define LL         long long
+#define inf        INT_MAX/3
+#define mod        1000000007ll
+#define PI         2.0*acos(0.0)
+#define linf       (1ll<<60)-1
+#define FOR(I,A,B) for(int I = (A); I < (B); ++I)
+#define REP(I,N)   FOR(I,0,N)
+#define ALL(A)     ((A).begin(), (A).end())
+#define set0(ar)   memset(ar,0,sizeof ar)
+#define vsort(v)   sort(v.begin(),v.end())
+#define setinf(ar) memset(ar,126,sizeof ar)
+ 
+ 
+ 
+template <class T> inline T bigmod(T p,T e,T M){
+    LL ret = 1;
+    for(; e > 0; e >>= 1){
+        if(e & 1) ret = (ret * p) % M;
+        p = (p * p) % M;
+    } return (T)ret;
+}
+template <class T> inline T gcd(T a,T b){if(b==0)return a;return gcd(b,a%b);}
+template <class T> inline T modinverse(T a,T M){return bigmod(a,M-2,M);}
+ 
+ 
+#define EPS 1E-8
+#define pt(a) &(a.x), &(a.y), &(a.z)
+ 
+typedef struct {
+  double x, y, z;
+} Point;
+ 
+Point operator + (Point a, Point b) {
+  Point p;
+ 
+  p.x = a.x + b.x;
+  p.y = a.y + b.y;
+  p.z = a.z + b.z;
+  return p;
+}
+ 
+Point operator * (double k, Point a) {
+  Point p;
+ 
+  p.x = k*a.x;
+  p.y = k*a.y;
+  p.z = k*a.z;
+  return p;
+}
+ 
+Point operator * (Point a, double k) {
+  return (k*a);
+}
+ 
+Point operator / (Point a, double k) {
+  return a*(1/k);
+}
+ 
+Point operator - (Point a, Point b) {
+  return a+(-1.0*b);
+}
+ 
+double dot(Point a, Point b) {
+  return a.x*b.x + a.y*b.y + a.z*b.z;
+}
+ 
+Point cross(Point a, Point b) {
+  Point cp;
+ 
+  cp.x = a.y*b.z-b.y*a.z;
+  cp.y = b.x*a.z-a.x*b.z;
+  cp.z = a.x*b.y-b.x*a.y;
+  return cp;
+}
+ 
+double lng2(Point a) {  // find the length of a vector, squared
+  return dot(a,a);
+}
+ 
+double lng(Point a) {   // find the length of a vector
+  return sqrt(dot(a,a));
+}
+ 
+Point closest_pt_iline(Point a, Point b, Point p) {
+  double along = dot(b-a,p-a)/lng2(b-a);
+  return (b-a)*along + a;
+}
+ 
+Point closest_pt_seg(Point a, Point b, Point p) {
+  double along;
+ 
+  if (lng2(b-a) < EPS) return a;
+  along = dot(b-a,p-a)/lng2(b-a);
+  if (along < 0) along = 0;
+  if (along > 1) along = 1;
+  return (b-a)*along + a;
+}
+ 
+/* Planes are commonly represented in one of two ways:
+   as a vector normal (perpendicular) to the plane and a
+   single point on the plane, or as three non-collinear
+   points on the plane. */
+ 
+Point closest_pt_plane(Point norm, Point a, Point p) {
+  Point res = cross(cross(norm,p-a),norm);
+  if (lng2(res) < EPS) return a;
+  return res*dot(res,p-a)/lng2(res);
+}
+ 
+Point closest_pt_plane(Point a, Point b, Point c, Point p) {
+  Point norm;
+ 
+  norm = cross(b-a,c-a);
+  assert(lng2(norm) > EPS);  // collinearity
+  return closest_pt_plane(norm,a,p);
+}
+ 
+/* Given a sphere and an infinite line, determine if the two
+   intersect, and if so, find the points of intersection.  If the
+   line is tangent to the sphere, the points will be the same */
+ 
+int sphere_iline_isect(Point c, double r, Point a, Point b,
+                      Point *p, Point *q) {
+  Point vec, mid = closest_pt_iline(a,b,c);
+ 
+  if (lng2(c-mid) > r*r) return 0;
+  vec = (a-b)*sqrt((r*r - lng2(c-mid))/lng2(a-b));
+  *p = mid + vec;
+  *q = mid - vec;
+  return 1;
+}
+ 
+/* Often we are given a set of points in 3D space, and we know
+   that they all lie in a certain plane.  We can translate
+   that problem into a 2D problem using this code.
+ 
+   Select three of the points to define your plane.  The points
+   must be distinct and not collinear.  This code will find the
+   position of another point, p, in reference to an arbitrary,
+   but deterministic set of axes defined by the first three points.
+ 
+   This code just assumes that the points are actually coplanar. */
+ 
+Point to_plane(Point a, Point b, Point c, Point p) {
+  Point norm, ydir, xdir, res;
+ 
+  norm = cross(b-a,c-a);
+  assert(lng2(norm) > EPS);  // collinearity
+  xdir = (b-a)/lng(b-a); // create orthonormal vectors
+  ydir = cross(norm,xdir);
+  ydir = ydir/lng(ydir);
+  res.x = dot(p-a,xdir);
+  res.y = dot(p-a,ydir);
+  res.z = 0;
+  return res;
+}
+ 
+/* given two lines in 3D space, find distance of closest approach */
+double line_line_dist(Point a, Point b, Point c, Point d) {
+  Point perp = cross(b-a,d-c);
+ 
+  if (lng2(perp) < EPS)  /* parallel */
+    perp = cross(b-a,cross(b-a,c-a));
+  if (lng2(perp) < EPS) return 0; /* coincident */
+ 
+  return fabs(dot(a-c,perp))/lng(perp);
+}
+ 
+/* this is the same as line_line_dist, but it also returns
+   the points of closest approach */
+double closest_approach(Point a, Point b, Point c, Point d,
+                        Point *p, Point *q) {
+  double s = dot(d-c,b-a), t = dot(a-c,d-c);
+  double num, den, tmp;
+ 
+  den = lng2(b-a)*lng2(d-c) - s*s;
+  num = t*s - dot(a-c,b-a)*lng2(d-c);
+  if (fabs(den) < EPS) { /* parallel */
+    *p = a;
+    *q = (d-c)*t/lng2(d-c) + c;
+    if (fabs(s) < EPS) *q = a;  /* coincident */
+  } else {  /* skew */
+    tmp = num/den;
+    *p = a + (b-a)*tmp;
+    *q = c + (d-c)*(t + s*tmp)/lng2(d-c);
+  }
+  return lng(*p-*q);
+}
+ 
+/* is the point p on the infinite line ab? */
+int on_iline(Point a, Point b, Point p) {
+  return (lng2(p-closest_pt_iline(a,b,p)) < EPS);
+}
+ 
+/* is the point p on the segment ab? */
+int on_seg(Point a, Point b, Point p) {
+  return (lng(a-p) + lng(p-b) - lng(a-b) < EPS);
+}
+ 
+/* Given a plane and a line ab, determine if the two intersect,
+   and if so, find the single point of intersection */
+int plane_iline_isect(Point norm, Point ori, Point a, Point b, Point *p) {
+  double along, den = dot(norm,b-a);
+ 
+  if (fabs(den) < EPS) { /* parallel */
+    if (lng2(cross(ori-a,b-a)) < EPS) return -1; /* coincident */
+    return 0;  /* non-intersecting */
+  }
+  along = dot(norm,ori-a)/den;
+ 
+  /* if you want to intersect a plane with a finite segment,
+     check that (along <= 1 && along => 0) */
+ 
+  *p = a + along*(b-a);
+  return 1;
+}
+ 
+ 
+double dis(Point a, Point b){
+    return sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y) + (a.z-b.z)*(a.z-b.z));
+}
+ 
+main(){
+//    ios_base::sync_with_stdio(0); cin.tie(0);
+    LL a = 0,b,c,d,e = 0,f = 0,g = 0,h = 0,x = 1,y,z;
+    cin >> a;
+    FOR(ts, 1, a + 1){
+        Point a, b, c;
+        scanf("%lf %lf %lf %lf %lf %lf %lf %lf %lf", pt(a), pt(b), pt(c));
+        Point p = closest_pt_seg(a, b, c);
+        printf("Case %d: %.10lf\n", ts, dis(c, p));
+    }
+}
