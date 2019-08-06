@@ -1,0 +1,20 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+int main()
+{
+
+    string str;
+    map<string,ll>mp;
+    vector<string>V;
+    while(cin>>str){
+        mp[str]++;
+        if(mp[str]==1){
+            V.push_back(str);
+        }
+    }
+    for(auto it:V){
+        cout<<it<<' '<<mp[it]<<endl;
+    }
+}

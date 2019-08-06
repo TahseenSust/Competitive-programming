@@ -1,0 +1,46 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+    //freopen("input.txt","r",stdin);
+    int f[3],s[3],t[3];
+    while(scanf("%d",&f[0])!=EOF){
+        for(int i=1;i<3;i++) scanf("%d",&f[i]);
+        for(int i=0;i<3;i++) scanf("%d",&s[i]);
+        for(int i=0;i<3;i++) scanf("%d",&t[i]);
+
+        int c[10];
+
+        c[0]=s[0]+t[0]+f[1]+s[1]+f[2]+t[2];
+       // printf("%d\n",c[0]);
+
+        c[1]=s[0]+t[0]+f[1]+t[1]+f[2]+s[2];
+       // printf("%d\n",c[1]);
+
+        c[2]=f[0]+t[0]+f[1]+s[1]+s[2]+t[2];
+       // printf("%d\n",c[2]);
+
+        c[3]=f[0]+s[0]+f[1]+t[1]+s[2]+t[2];
+       // printf("%d\n",c[3]);
+
+        c[4]=f[0]+t[0]+s[1]+t[1]+s[2]+f[2];
+       // printf("%d\n",c[4]);
+        c[5]=f[0]+s[0]+s[1]+t[1]+f[2]+t[2];
+       // printf("%d\n",c[5]);
+        string ans="BCG ";
+        int mn=c[0];
+        int mnin=0;
+        for(int i=1;i<6;i++){
+            if(c[i]<mn){
+                mn=c[i];
+                mnin=i;
+            }
+        }
+        if(mnin==1) ans="BGC ";
+        else if(mnin==2) ans="CBG ";
+        else if(mnin==3) ans="CGB ";
+        else if(mnin==4) ans="GBC ";
+        else if(mnin==5) ans="GCB ";
+        cout<<ans<<mn<<endl;
+    }
+}

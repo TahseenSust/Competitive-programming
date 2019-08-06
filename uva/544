@@ -1,0 +1,72 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<pair<int,int>>G[205];
+
+int prims(int s,int d)
+{
+    bool mark[205]={0};
+    int ans=INT_MAX;
+
+    priority_queue<pair<int,int>>pQ;
+    pQ.push({INT_MAX,s});
+
+    while(!pQ.empty()){
+        int u=pQ.top().second,cost=pQ.top().first;
+        pQ.pop();
+        if(mark[u]) continue;
+        mark[u]=1;
+        ans=min(ans,cost);
+        if(u==d){
+            return ans;
+        }
+        for(int i=0;i<G[u].size();i++){
+            int v=G[u][i].first,weight=G[u][i].second;
+            if(!mark[v]){
+                pQ.push({weight,v});
+            }
+        }
+
+    }
+
+}
+
+
+int main()
+{
+    int n,r,w,k=0,tc=1;
+    map<string,int>mp;
+    string s1,s2;
+
+
+
+
+    while(scanf("%d%d",&n,&r)){
+        if(n==0 && r==0) return 0;
+
+        k=0;
+        mp.clear();
+
+        for(int i=0;i<r;i++){
+            cin>>s1>>s2>>w;
+
+            if(mp.find(s1)==mp.end()){
+                mp[s1]=k++;
+            }
+            if(mp.find(s2)==mp.end()){
+                mp[s2]=k++;
+            }
+            int u=mp[s1],v=mp[s2];
+
+            G[u].push_back({v,w});
+            G[v].push_back({u,w});
+
+        }
+
+        cin>>s1>>s2;
+
+        int ans=prims(mp[s1],mp[s2]);
+        printf("Scenario #%d\n",tc++);
+        printf("%d tons\n\n",ans);
+    }
+}

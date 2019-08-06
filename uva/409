@@ -1,0 +1,82 @@
+#pragma comment(linker, "/stack:200000000")
+#pragma GCC optimize("Ofast")
+#pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,tune=native")
+#pragma GCC optimize("unroll-loops")
+
+
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+
+int main()
+{
+    //freopen("uva.txt","r",stdin);
+    int w,e,tc=1;
+
+    while(cin>>w>>e){
+
+        map<string,bool>keyword;
+        string str;
+
+        for(int i=0;i<w;i++){
+            cin>>str;
+            keyword[str]=1;
+        }
+        int cnt=0;
+
+        vector<string>V;
+
+        int mx=0;
+        getline(cin,str);
+        for(int i=0;i<e;i++){
+
+            getline(cin,str);
+
+            V.push_back(str);
+            string word="";
+            str=str+"##";
+            cnt=0;
+            for(int j=0;j<str.size();j++){
+                str[j]=tolower(str[j]);
+                if((str[j]>='a' && str[j]<='z')){
+                    word+=str[j];
+                }else{
+                    if(word.size()>0){
+                        cnt+=keyword[word];
+                        word="";
+                    }
+
+                }
+            }
+            mx=max(mx,cnt);
+        }
+
+        vector<string>ans;
+        for(int i=0;i<e;i++){
+            string word="";
+            str=V[i];
+            cnt=0;
+            for(int j=0;j<str.size();j++){
+                str[j]=tolower(str[j]);
+                if(!(str[j]>='a' && str[j]<='z')){
+                    if(word.size()>0){
+                        cnt+=keyword[word];
+                        word="";
+                    }
+                }else{
+
+                    word+=str[j];
+                }
+            }
+            if(cnt==mx){
+                ans.push_back(V[i]);
+            }
+        }
+        printf("Excuse Set #%d\n",tc++);
+        for(int i=0;i<ans.size();i++){
+            cout<<ans[i]<<endl;
+        }
+        cout<<endl;
+    }
+}

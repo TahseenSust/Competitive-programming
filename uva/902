@@ -1,0 +1,31 @@
+#pragma comment(linker, "/stack:200000000")
+#pragma GCC optimize("Ofast")
+#pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,tune=native")
+#pragma GCC optimize("unroll-loops")
+
+
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+
+int main()
+{
+    int n,cnt,mx=0;
+    string str,ans,tmp,tmp2;
+
+    while(cin>>n>>str){
+        cnt=mx=0;
+        ans="";
+        map<string,int>mp;
+        for(int i=0;i<str.size()-n;i++){
+            tmp=str.substr(i,n);
+            mp[tmp]++;
+            if(mp[tmp]>mx){
+                mx=mp[tmp];
+                ans=tmp;
+            }
+        }
+        cout<<ans<<endl;
+    }
+}
