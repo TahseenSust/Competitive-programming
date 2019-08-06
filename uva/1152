@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main()
+{
+
+
+    int t,f=0;
+    scanf("%d",&t);
+
+    while(t--){
+
+        if(f) cout<<endl;
+
+        f=1;
+
+        int n;
+
+        scanf("%d",&n);
+
+        int l1[n+5],l2[n+5],l3[n+5],l4[n+5];
+
+        for(int i=0;i<n;i++){
+            scanf("%d%d%d%d",&l1[i],&l2[i],&l3[i],&l4[i]);
+        }
+        vector<int>V;
+
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                V.push_back(l1[i]+l2[j]);
+            }
+        }
+
+        sort(V.begin(),V.end());
+
+        int ans=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                int sum=-(l3[i]+l4[j]);
+
+                ans+=upper_bound(V.begin(),V.end(),sum)-lower_bound(V.begin(),V.end(),sum);
+
+            }
+        }
+        printf("%d\n",ans);
+    }
+
+}

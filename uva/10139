@@ -1,0 +1,70 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define MX 100005
+
+bitset<MX>chk;
+vector<int>prime;
+
+void sieve()
+{
+    chk[0]=chk[1]=1;
+    prime.push_back(2);
+    for(int i=4;i<=MX;i+=2){
+        chk[i]=1;
+    }
+    for(int i=3;i<=MX;i+=2){
+        if(chk[i]==0){
+            prime.push_back(i);
+            chk[i]=1;
+            for(int j=2;i*j<=MX;j++){
+                chk[i*j]=1;
+            }
+        }
+    }
+}
+int main()
+{
+    //freopen("out.txt","w",stdout);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    sieve();
+    //cout<<prime.size()<<endl;
+    int n,m,a,b;
+    while(cin>>n>>m){
+        a=n,b=m;
+        vector<pair<int,int> >store;
+        if(m==0) m++;
+        for(int i=0;i<prime.size() && prime[i]<=m;i++){
+            int cnt=0;
+            if(m%prime[i]==0){
+                while(m%prime[i]==0){
+                    m/=prime[i];
+                    cnt++;
+                }
+                store.push_back({prime[i],cnt});
+            }
+        }
+        if(m!=1){
+            store.push_back({m,1});
+        }
+        bool flag=1;
+        for(int i=0;i<store.size();i++){
+            //cout<<store[i].first<<' '<<store[i].second<<endl;
+            int x=n,cnt=0;
+            while(x){
+                cnt+=(x/store[i].first);
+                x/=store[i].first;
+            }
+            if(cnt<store[i].second){
+                flag=0;
+                break;
+            }
+        }
+        if(flag){
+            printf("%d divides %d!\n",b,a);
+        }else{
+            printf("%d does not divide %d!\n",b,a);
+        }
+    }
+}

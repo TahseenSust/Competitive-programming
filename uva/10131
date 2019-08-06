@@ -1,0 +1,56 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<long long,long long> pll;
+pair<pll,ll> ara[1005];
+ll dp[1005];
+ll dir[1005],n;
+
+int LIS(int u)
+{
+    if(dp[u]!=-1) return dp[u];
+    int mx=0;
+    for(int v=u+1;v<n;v++){
+        if(ara[u].first.second>ara[v].first.second){
+            int ln=LIS(v);
+            if(ln>mx){
+                mx=ln;
+                dir[u]=v;
+            }
+        }
+    }
+    return dp[u]=mx+1;
+}
+
+bool cmp(pair<pll,ll> a,pair<pll,ll> b)
+{
+    if(a.first.first==b.first.first){
+        return a.first.second<b.first.second;
+    }
+    return a.first.first<b.first.first;
+}
+
+int main()
+{
+    while(cin>>ara[n].first.first>>ara[n].first.second){
+        ara[n].second=n+1;
+        n++;
+    }
+    int ans=0,s;
+    sort(ara,ara+n,cmp);
+    memset(dp,-1,sizeof dp);
+    memset(dir,-1,sizeof dir);
+    for(int i=0;i<n;i++){
+        int ln=LIS(i);
+        if(ln>ans){
+            ans=ln;
+            s=i;
+        }
+    }
+    cout<<ans<<endl;
+    while(s!=-1){
+        cout<<ara[s].second<<endl;
+        s=dir[s];
+    }
+}
+

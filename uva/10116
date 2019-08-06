@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+    //freopen("file.txt","w",stdout);
+    int n,m,c;
+    while(cin>>n>>m>>c){
+        if(!n || !m || !c){
+            break;
+        }
+        string com[20];
+        bool vis[20][20]={0};
+        for(int i=0;i<n;i++){
+            cin>>com[i];
+        }
+        int step[100][100]={0},x=0,y=c-1,cnt=0;
+        bool loop=0;
+        while(1){
+            if(x<0 || x>=n || y<0 || y>=m){
+                break;
+            }else if(vis[x][y]==1){
+                loop=1;
+                break;
+            }
+
+            cnt++;
+            step[x][y]=cnt;
+            vis[x][y]=1;
+            if(com[x][y]=='N'){
+                x--;
+            }else if(com[x][y]=='S'){
+                x++;
+            }else if(com[x][y]=='E'){
+                y++;
+            }else if(com[x][y]=='W'){
+                y--;
+            }
+        }
+        if(loop){
+            printf("%d step(s) before a loop of %d step(s)\n",step[x][y]-1,cnt-step[x][y]+1);
+        }else{
+            printf("%d step(s) to exit\n",cnt);
+        }
+    }
+}

@@ -1,0 +1,32 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+ll MOD=100000007;
+
+ll catalan[100002];
+
+void init() {
+    catalan[0] = catalan[1] = 1;
+    for (int i=2; i<=100; i++) {
+        catalan[i] = 0;
+        for (int j=0; j < i; j++) {
+            catalan[i] += (catalan[j] * catalan[i-j-1]) % MOD;
+            if (catalan[i] >= MOD) {
+                catalan[i] -= MOD;
+            }
+        }
+    }
+}
+
+int main()
+{
+	init();
+	int n,f=0;
+	while(cin>>n){
+		if(f) cout<<endl;
+		f=1;
+		cout<<catalan[n]<<endl;
+	}
+}

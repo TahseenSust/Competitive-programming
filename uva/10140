@@ -1,0 +1,73 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MX 214740
+bitset<MX+10>chek;
+vector<unsigned int>prime;
+void sieve()
+{
+    chek[0]=chek[1]=1;
+    //for(unsigned int i=4;i<=MX;i+=2) chek[i]=1;
+    for(unsigned int i=2;i*i<=MX;i++){
+        if(!chek[i]){
+            for(unsigned int j=2;i*j<=MX;j++){
+                chek[i*j]=1;
+            }
+        }
+    }
+    for(unsigned int i=2;i<=MX;i++){
+        if(!chek[i]){
+            prime.push_back(i);
+        }
+    }
+}
+
+bool is_prime(unsigned int n)
+{
+    if(n<=MX){
+        return !chek[n];
+    }
+    for(unsigned int i=0;i<prime.size() && prime[i]<=sqrt(n);i++){
+        if(n%prime[i]==0){
+            return false;
+        }
+    }
+    return true;
+}
+int main()
+{
+    //freopen("uva10140.txt","w",stdout);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    sieve();
+    unsigned int l,u;
+    //cout<<unsigned int_MAX<<endl;
+    while(cin>>l>>u){
+        //cout<<"herre\n";
+        unsigned int mn=INT_MAX,mx=0,d=-1;
+        pair<unsigned int,unsigned int>ans1,ans2;
+        //cout<<"herre\n";
+        for(unsigned int i=l;i<=u;i++){
+            //cout<<"herre\n";
+            if(is_prime(i)){
+                if(d!=-1){
+                    if((i-d)<mn){
+                        mn=i-d;
+                        ans1.first=d;
+                        ans1.second=i;
+                    }
+                    if((i-d)>mx){
+                        mx=i-d;
+                        ans2.first=d;
+                        ans2.second=i;
+                    }
+                }
+                d=i;
+            }
+        }
+        if(mx==0){
+            cout<<"There are no adjacent primes.\n";
+        }else{
+            cout<<ans1.first<<","<<ans1.second<<" are closest, "<<ans2.first<<","<<ans2.second<<" are most distant.\n";
+        }
+    }
+}

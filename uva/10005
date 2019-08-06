@@ -1,0 +1,80 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+const int sz=100005;
+
+struct point{
+    double x,y;
+};
+
+bool check(point a,point b,double r)
+{
+    return (sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y))<=r);
+}
+
+bool circle2PtsRad(point p1,point p2,double r,point &c)
+{
+    double d2=(p1.x - p2.x) * (p1.x - p2.x) +
+              (p1.y - p2.y) * (p1.y - p2.y);
+    double det = (r * r) / d2 - 0.25;
+    if(det<0.0) return false;
+    double h = sqrt(det);
+
+    c.x=(p1.x + p2.x) * 0.5 + (p1.y - p2.y)*h;
+    c.y=(p1.y + p2.y) * 0.5 + (p2.x - p1.x)*h;
+
+    return true;
+}
+
+int main()
+{
+    int n;
+
+    double x[100],y[100],R;
+
+    while(cin>>n && n){
+
+        point pts[105];
+
+        for(int i=0;i<n;i++){
+            cin>>x[i]>>y[i];
+            pts[i].x=x[i];
+            pts[i].y=y[i];
+        }
+        cin>>R;
+
+        double mx=0;
+
+        bool flag=0;
+
+        for(int i=0;i<n-1;i++){
+            for(int j=i+1;j<n;j++){
+                point c;
+                if(circle2PtsRad(pts[i],pts[j],R,c)){
+                    int cnt=0;
+                    for(int k=0;k<n;k++){
+                        cnt+=check(c,pts[k],R);
+                    }
+                    if(cnt==n){
+                        flag=1;
+                    }
+                }
+                if(circle2PtsRad(pts[j],pts[i],R,c)){
+                    int cnt=0;
+                    for(int k=0;k<n;k++){
+                        cnt+=check(c,pts[k],R);
+                    }
+                    if(cnt==n){
+                        flag=1;
+                    }
+                }
+            }
+        }
+
+        if(!flag){
+            printf("There is no way of packing that polygon.\n");
+        }else{
+            printf("The polygon can be packed in the circle.\n");
+        }
+    }
+}

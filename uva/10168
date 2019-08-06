@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define MX 10000005
+bitset<MX>chk;
+vector<int>prime;
+void sieve()
+{
+    chk.set();
+    chk[0]=chk[1]=0;
+    for(int i=2;i<=MX;i++){
+        if(chk[i]){
+            prime.push_back(i);
+            for(int j=2;i*j<=MX;j++){
+                chk[i*j]=0;
+            }
+        }
+    }
+}
+int main()
+{
+    sieve();
+    //printf("%d",prime.size());
+    int n;
+    while(scanf("%d",&n)!=EOF){
+        bool flag=0;
+        if(n%2==0){
+            int d=n-4;
+            for(int i=0;prime[i]<=d;i++){
+                if(chk[d-prime[i]]){
+                    printf("%d %d 2 2\n",prime[i],d-prime[i]);
+                    flag=1;
+                    break;
+                }
+            }
+        }else{
+            int d=n-2-prime[1];
+            for(int i=0;prime[i]<=d;i++){
+                if(chk[d-prime[i]]){
+                    printf("2 3 %d %d\n",prime[i],d-prime[i]);
+                    flag=1;
+                    break;
+                }
+            }
+        }
+        if(!flag){
+            printf("Impossible.\n");
+        }
+    }
+}
