@@ -1,0 +1,53 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int ara[1000000],n;
+int dp[1000000];
+int dp2[1000000];
+int dir[1000000];
+
+int main()
+{
+    //freopen("uva.txt","r",stdin);
+    int x;
+    while(cin>>n){
+        for(int i=0;i<n;i++){
+            cin>>ara[i];
+        }
+        vector<int>V;
+        V.push_back(ara[0]);
+        int lis[10005]={0};
+        int lds[10005]={0};
+        int sz=1;
+        lis[0]=1;
+        for(int i=1;i<n;i++){
+            if(ara[i]>V.back()){
+                V.push_back(ara[i]);
+                lis[i]=++sz;
+            }else{
+                int indx=lower_bound(V.begin(),V.end(),ara[i])-V.begin();
+                V[indx]=ara[i];
+                lis[i]=indx+1;
+            }
+        }
+        V.clear();
+        sz=1;
+        lds[n-1]=1;
+        V.push_back(ara[n-1]);
+        for(int i=n-2;i>=0;i--){
+            if(ara[i]>V.back()){
+                V.push_back(ara[i]);
+                lds[i]=++sz;
+            }else{
+                int indx=lower_bound(V.begin(),V.end(),ara[i])-V.begin();
+                V[indx]=ara[i];
+                lds[i]=indx+1;
+            }
+        }
+        int ans=0;
+        for(int i=0;i<n;i++){
+            ans=max(ans,min(lis[i],lds[i]));
+        }
+        cout<<ans*2-1<<endl;
+    }
+}

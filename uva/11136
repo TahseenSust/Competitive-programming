@@ -1,0 +1,35 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+int main()
+{
+
+    ll n,ans=0;
+    while(cin>>n && n){
+        ans=0;
+        priority_queue<ll,vector<ll>,greater<ll>>mn;
+        priority_queue<ll>mx;
+        map<ll,ll>mp;
+        for(int day=1;day<=n;day++){
+            ll k,x;
+            cin>>k;
+            for(int i=0;i<k;i++){
+                cin>>x;
+                mx.push(x);
+                mn.push(x);
+                mp[x]++;
+            }
+            while(mp[mx.top()]<=0){
+                mx.pop();
+            }
+            while(mp[mn.top()]<=0){
+                mn.pop();
+            }
+            ans+=(mx.top()-mn.top());
+            mp[mx.top()]--;
+            mp[mn.top()]--;
+        }
+        cout<<ans<<endl;
+    }
+}

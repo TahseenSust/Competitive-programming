@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main()
+{
+
+
+    int t,f=0;
+    scanf("%d",&t);
+
+    for(int tc=1;tc<=t;tc++){
+
+        int n;
+
+        scanf("%d",&n);
+
+        int p[100005],q[100005];
+
+        for(int i=0;i<n;i++){
+            cin>>p[i];
+        }
+
+        int pos=0,sum=0;
+        int ben[2*100005]={0};
+        for(int i=0;i<n;i++){
+            cin>>q[i];
+            ben[i]=(p[i]-q[i]);
+            sum+=ben[i];
+        }
+        if(sum<0){
+            pos=-1;
+        }
+
+        printf("Case %d: ",tc);
+        if(pos==-1){
+            printf("Not possible\n");
+        }else{
+            sum=0;
+            pos=0;
+            for(int i=0,j;i<n+pos;i++){
+                j=(i)%n;
+                sum+=ben[j];
+
+                while(sum<0){
+                    sum-=ben[pos];
+                    pos++;
+                }
+                //cout<<sum<<endl;
+            }
+            printf("Possible from station %d\n",pos+1);
+        }
+
+    }
+
+}

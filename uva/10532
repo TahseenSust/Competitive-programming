@@ -1,0 +1,52 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef unsigned long long ll;
+ll n,m,r;
+
+ll dp[52][52];
+ll koyta[52];
+
+ll solve(ll ind,ll taken)
+{
+    if(ind>n){
+        if(taken==r){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+    if(dp[ind][taken]!=-1){
+        return dp[ind][taken];
+    }
+    ll p=0;
+    for(ll i=0;i<=koyta[ind];i++){
+        p+=solve(ind+1,taken+i);
+    }
+    return dp[ind][taken]=p;
+}
+int main()
+{
+
+    int tc=1;
+
+    while(cin>>n>>m && n){
+        ll x;
+
+        memset(koyta,0,sizeof koyta);
+
+
+        for(int i=0;i<n;i++){
+            cin>>x;
+            koyta[x]++;
+        }
+        printf("Case %d:\n",tc++);
+        for(int i=0;i<m;i++){
+            memset(dp,-1,sizeof dp);
+            cin>>r;
+            cout<<solve(0,0)<<endl;;
+        }
+
+    }
+}
+
+

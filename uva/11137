@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<ll,ll> pll;
+typedef pair<int,int> pii;
+#define INF 1<<8
+
+pii info[1050];
+ll dp[22][30005];
+vector<ll>coin;
+
+ll solve(ll i,ll w)
+{
+    if(i>=21){
+        if(w==0){
+            return 1;
+        }
+        return 0;
+    }
+    if(dp[i][w]!=-1){
+        return dp[i][w];
+    }
+    ll p1=0,p2=0;
+    if(w*w*w-coin[i]>=0){
+        p1=solve(i,w-coin[i]);
+    }
+    p2=solve(i+1,w);
+    dp[i][w]=p1+p2;
+    return dp[i][w];
+}
+
+int main()
+{
+    //freopen("uva.txt","w",stdout);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    ll n;
+    for(ll i=1;i<=21;i++){
+        coin.push_back(i*i*i);
+    }
+    memset(dp,-1,sizeof dp);
+    while(cin>>n){
+
+        ll ans=solve(0,n);
+        cout<<ans<<endl;
+
+    }
+
+}
+
+

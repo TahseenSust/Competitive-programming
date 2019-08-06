@@ -1,0 +1,42 @@
+#include <bits/stdc++.h>
+using namespace std;
+string str;
+int k;
+int trac[30];
+set<string>st;
+
+void solve(int j,string str)
+{
+    if(str.size()==k){
+        cout<<str<<endl;
+        return;
+    }
+    if(j>=26){
+
+        return;
+    }
+    string b[100];
+    b[0]="";
+
+
+    for(int i=1;i<=trac[j];i++){
+        char p='a'+j;
+        b[i]=b[i-1]+p;
+    }
+    for(int i=trac[j];i>=0;i--){
+        if(str.size()+b[i].size()<=k){
+            solve(j+1,str+b[i]);
+        }
+    }
+}
+
+int main()
+{
+    while(cin>>str>>k){
+        memset(trac,0,sizeof trac);
+        for(int i=0;i<str.size();i++){
+            trac[str[i]-'a']++;
+        }
+        solve(0,"");
+    }
+}

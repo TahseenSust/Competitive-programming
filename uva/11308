@@ -1,0 +1,67 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define PI acos(-1)
+#define INF 1000000000
+#define MOD 1000000007
+typedef long long ll;
+typedef unsigned long long ull;
+typedef pair<int,int> pii;
+
+bool cmp(pair<string,int>a,pair<string,int>b)
+{
+    if(a.second==b.second){
+        return a.first<b.first;
+    }
+    return a.second<b.second;
+}
+
+int main ()
+{
+    //freopen("in.txt","r",stdin);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int t;
+    cin>>t;
+    bool flag=0;
+    while(t--){
+
+        string title,s,recipe;
+        getline(cin,title);
+        getline(cin,title);
+        int m,n,b,p,k;
+        cin>>m>>n>>b;
+        map<string,int>mp;
+        for(int i=0;i<m;i++){
+            cin>>s>>p;
+            mp[s]=p;
+        }
+        int mut=0;
+        for(int i=0;i<title.size();i++){
+            title[i]=toupper(title[i]);
+        }
+        cout<<title<<endl;
+        vector<pair<string,int> >ans;
+        for(int i=0;i<n;i++){
+            mut=0;
+            getline(cin,recipe);
+            getline(cin,recipe);
+            cin>>k;
+            for(int j=0;j<k;j++){
+                cin>>s>>p;
+                mut+=mp[s]*p;
+            }
+            if(mut<=b){
+                ans.push_back({recipe,mut});
+            }
+        }
+        sort(ans.begin(),ans.end(),cmp);
+        if(ans.size()==0){
+            cout<<"Too expensive!\n";
+        }else{
+            for(int i=0;i<ans.size();i++){
+                cout<<ans[i].first<<endl;
+            }
+        }
+        cout<<endl;
+    }
+}

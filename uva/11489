@@ -1,0 +1,67 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+/*
+bool dp[105][105][105];
+bool vis[105][105][105];
+
+bool win(int a,int b,int c)
+{
+    if(vis[a][b][c]) return dp[a][b][c];
+    vis[a][b][c]=1;
+    if(a>0 && win(a-1,b,c)==0) return dp[a][b][c]=1;
+    if(b>0 && (b-1+2*c)%3==0 && win(a,b-1,c)==0) return dp[a][b][c]=1;
+    if(c>0 && (b+2*(c-1))%3==0 && win(a,b,c-1)==0) return dp[a][b][c]=1;
+    return dp[a][b][c]=0;
+}
+*/
+
+int main()
+{
+    int t;
+    string num;
+
+    scanf("%d",&t);
+
+    for(int tc=1;tc<=t;tc++){
+        cin>>num;
+
+        int zero=0,one=0,two=0,sum=0;
+        bool s=1;
+        //cin>>zero>>one>>two;
+
+        for(int i=0;i<num.size();i++){
+            sum+=(num[i]-'0');
+            if((num[i]-'0')%3==0) zero++;
+            else if((num[i]-'0')%3==1) one++;
+            else if((num[i]-'0')%3==2) two++;
+        }
+        if(sum%3==0){
+            if(zero%2==0) s=0;
+        }else if(sum%3==1){
+            if(one){
+                if(zero%2==1) s=0;
+            }else{
+                s=0;
+            }
+        }else{
+            if(two){
+                if(zero%2==1) s=0;
+            }else{
+                s=0;
+            }
+        }
+        if(s){
+            printf("Case %d: S\n",tc);
+        }else{
+            printf("Case %d: T\n",tc);
+        }
+
+
+
+    }
+
+
+}
+

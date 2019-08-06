@@ -1,0 +1,52 @@
+#include<bits/stdc++.h>
+using namespace std;
+int cell[1005][1005]={0};
+bool vis[1005][1005]={0};
+int fx[]={1,-1,0,0};
+int fy[]={0,0,1,-1};
+int row,column,bomb;
+int d[1005][1005];
+int bfs(int s1,int s2,int d1,int d2)
+{
+    memset(vis,0,sizeof(vis));
+    memset(d,0,sizeof(d));
+    vis[s1][s2]=1;
+    queue<pair<int,int> >Q;
+    Q.push({s1,s2});
+    d[s1][s2]=0;
+    while(!Q.empty()){
+        pair<int,int>top=Q.front();
+        Q.pop();
+        for(int k=0;k<4;k++){
+            int tx=top.first+fx[k];
+            int ty=top.second+fy[k];
+
+            if(tx>=0 && tx<row && ty>=0 && ty<column && cell[tx][ty]!=-1 && vis[tx][ty]==0){
+                //cout<<tx<<' '<<ty<<' '<<vis[tx][ty]<<endl;
+                //getchar();
+                vis[tx][ty]=1;
+                d[tx][ty]=1+d[top.first][top.second];
+
+                Q.push({tx,ty});
+            }
+        }
+    }
+    return d[d1][d2];
+}
+int main()
+{
+    int x,y,n,s1,s2,d1,d2;
+    while(cin>>row>>column && row && column){
+        memset(cell,0,sizeof(cell));
+        cin>>bomb;
+        for(int i=0;i<bomb;i++){
+            cin>>x>>n;
+            while(n--){
+                cin>>y;
+                cell[x][y]=-1;
+            }
+        }
+        cin>>s1>>s2>>d1>>d2;
+        cout<<bfs(s1,s2,d1,d2)<<endl;
+    }
+}

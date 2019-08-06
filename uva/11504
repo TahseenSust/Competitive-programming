@@ -1,0 +1,63 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+vector<int>G[100005];
+bool vis[100005];
+stack<int>st;
+
+void dfs1(int u)
+{
+    vis[u]=1;
+    for(int i=0;i<G[u].size();i++){
+        if(vis[G[u][i]]==0){
+            dfs1(G[u][i]);
+        }
+    }
+    st.push(u);
+}
+void dfs2(int u)
+{
+    vis[u]=1;
+    for(int i=0;i<G[u].size();i++){
+        if(vis[G[u][i]]==0){
+            dfs2(G[u][i]);
+        }
+    }
+}
+int main() {
+    //freopen("in.txt","r",stdin);
+    //freopen("out.txt","w",stdout);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int n,m,u,v;
+    int t;
+    cin>>t;
+    for(int tc=1;tc<=t;tc++){
+        memset(vis,false,sizeof vis);
+        for(int i=0;i<100004;i++){
+            G[i].clear();
+        }
+        cin>>n>>m;
+        for(int i=0;i<m;i++){
+            cin>>u>>v;
+            G[u].push_back(v);
+        }
+        int ans=0;
+        for(int i=1;i<=n;i++){
+            if(vis[i]==0){
+                dfs1(i);
+            }
+        }
+        memset(vis,false,sizeof vis);
+        while(!st.empty()){
+            int v=st.top();
+            st.pop();
+            if(!vis[v]){
+                ans++;
+                dfs2(v);
+            }
+        }
+        printf("%d\n",ans);
+    }
+}

@@ -1,0 +1,46 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+int dp[105][105],ara[105];
+
+int solve(int l,int r)
+{
+    if(l>r) return 0;
+
+
+
+    int &re=dp[l][r],sum=0;
+
+    if(re!=-1) return re;
+
+    re=INT_MIN;
+
+    for(int i=l;i<=r;i++){
+        sum+=ara[i];
+        re=max(re,sum-solve(i+1,r));
+    }
+    sum=0;
+    for(int i=r;i>=l;i--){
+        sum+=ara[i];
+        re=max(re,sum-solve(l,i-1));
+    }
+
+    return re;
+}
+
+int main()
+{
+    int n;
+
+    while(cin>>n && n)
+    {
+        for(int i=0;i<n;i++) cin>>ara[i];
+
+        memset(dp,-1,sizeof dp);
+        cout<<solve(0,n-1)<<endl;
+    }
+
+}
+

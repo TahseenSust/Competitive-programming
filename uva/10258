@@ -1,0 +1,121 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+struct dt{
+    int c,p,t;
+    char v;
+};
+
+struct dt2{
+    int c,s=0,t=0;
+};
+
+bool cmp(dt a,dt b)
+{
+    if(a.c==b.c){
+        if(a.p==b.p){
+            return a.t<b.t;
+        }
+        return a.p<b.p;
+    }
+    return a.c<b.c;
+}
+
+bool cmp2(dt2 a,dt2 b)
+{
+    if(a.s==b.s){
+        if(a.t==b.t){
+            return a.c<b.c;
+        }
+        return a.t<b.t;
+    }
+    return a.s>b.s;
+}
+int main()
+{
+    //freopen("in.txt","r",stdin);
+    //freopen("out.txt","w",stdout);
+    int t;
+    cin>>t;
+    bool f=0;
+    string info;
+    getline(cin,info);
+    getline(cin,info);
+    while(t--){
+        if(f){
+            cout<<endl;
+        }
+        f=1;
+        dt score[100000];
+        //getline(cin,info);
+        //getline(cin,info);
+        int n=0;
+        for(int i=0;;i++){
+            getline(cin,info);
+            if(info.size()==0){
+                break;
+            }
+            //cout<<info<<endl;
+            int d=0,j=0;
+            while(info[j]!=' '){
+                d=d*10+(info[j]-'0');
+                j++;
+            }
+            j++;
+            score[i].c=d;
+            d=0;
+            while(info[j]!=' '){
+                d=d*10+(info[j]-'0');
+                j++;
+            }
+            j++;
+            score[i].p=d;
+            d=0;
+            while(info[j]!=' '){
+                d=d*10+(info[j]-'0');
+                j++;
+            }
+            j++;
+            score[i].t=d;
+            score[i].v=info[j];
+            n++;
+        }
+        sort(score,score+n,cmp);
+//        for(int i=0;i<n;i++){
+//            cout<<score[i].c<<' '<<score[i].p<<' '<<score[i].t<<' '<<score[i].v<<endl;
+//        }
+        dt2 board[115];
+        int p=0,c=score[0].c,j=0,c_p=score[0].p;
+        for(int i=0;i<n;i++){
+            if(c!=score[i].c){
+                board[j].c=c;
+                c=score[i].c;
+                c_p=score[i].p;
+                p=0;
+                j++;
+            }
+            if(c_p!=score[i].p){
+                c_p=score[i].p;
+                p=0;
+            }
+            if(score[i].v=='C'){
+                board[j].s++;
+                board[j].t+=(score[i].t+p);
+                p=0;
+                while(c_p==score[i].p && c==score[i].c){
+                    i++;
+                }
+                i--;
+
+            }else if(score[i].v=='I'){
+                p+=20;
+            }
+        }
+        board[j].c=c;
+        j++;
+        sort(board,board+j,cmp2);
+        for(int i=0;i<j;i++){
+            printf("%d %d %d\n",board[i].c,board[i].s,board[i].t);
+        }
+    }
+}

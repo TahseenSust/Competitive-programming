@@ -1,0 +1,63 @@
+#include <bits/stdc++.h>
+using namespace std;
+string str[500];
+bool vis[500][500];
+//
+////8 move
+//int dx[]={0,1,1,1,0,-1,-1,-1};
+//int dy[]={1,1,0,-1,-1,-1,0,1};
+//
+
+//8 move
+int dx[]={0,1,0,-1};
+int dy[]={1,0,-1,0};
+
+
+
+int flood_fill(int x,int y,int n,int m,char ck)
+{
+    if(x<0|| x>=n){
+        return 0;
+    }
+    if(y<0){
+        y=m-1;
+    }
+    if(y>=m){
+        y=0;
+    }
+    if(vis[x][y] || str[x][y]!=ck) return 0;
+
+    vis[x][y]=1;
+    int re=1;
+    for(int i=0;i<4;i++){
+        re+=flood_fill(x+dx[i],y+dy[i],n,m,ck);
+    }
+    return re;
+
+
+}
+
+
+int main()
+{
+    //freopen("uva469.txt","w",stdout);
+    int n,m;
+    while(cin>>n>>m){
+        for(int i=0;i<n;i++){
+            cin>>str[i];
+        }
+        memset(vis,false,sizeof vis);
+        int ans,x,y;
+        cin>>x>>y;
+        ans=flood_fill(x,y,n,m,str[x][y]);
+        ans=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(vis[i][j]==0 && str[i][j]==str[x][y]){
+                    ans=max(ans,flood_fill(i,j,n,m,str[x][y]));
+                }
+            }
+        }
+        cout<<ans<<endl;
+    }
+}

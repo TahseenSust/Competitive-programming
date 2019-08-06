@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define PI acos(-1)
+#define INF 1000000000
+#define MOD 1000000007
+typedef long long ll;
+typedef unsigned long long ull;
+typedef pair<int,char> pii;
+
+
+int main ()
+{
+    int n;
+    while(cin>>n && n){
+        map<vector<int>,int>mp;
+        for(int i=0;i<n;i++){
+            vector<int>V;
+            int x;
+            for(int j=0;j<5;j++){
+                cin>>x;
+                V.push_back(x);
+            }
+            sort(V.begin(),V.end());
+            mp[V]++;
+        }
+        vector<int>sc;
+        for(auto x:mp){
+            sc.push_back(x.second);
+        }
+        sort(sc.begin(),sc.end());
+        reverse(sc.begin(),sc.end());
+        int cnt=0,pre=sc[0],ans=0;
+        while(pre==sc[cnt]){
+            ans+=sc[cnt++];
+        }
+        cout<<ans<<endl;
+    }
+}

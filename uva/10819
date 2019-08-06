@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<ll,ll> pll;
+typedef pair<int,int> pii;
+#define INF 1<<8
+
+int dp[105][102*4000];
+pair<int,int>info[105];
+int n,k,cost;
+
+int solve(int i,int w)
+{
+    if(i>=n){
+        if(w<=cost){
+            return 0;
+        }else if(w>2000){
+            if(w<=cost+200){
+                return 0;
+            }
+            return -INF;
+        }
+        return -INF;
+    }
+    if(dp[i][w]!=-1){
+        return dp[i][w];
+    }
+    int p1=-INF,p2=-INF;
+    if(w+info[i].first<=cost+200)
+        p1=info[i].second+solve(i+1,w+info[i].first);
+    p2=solve(i+1,w);
+    dp[i][w]=max(p1,p2);
+    return dp[i][w];
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    while(cin>>cost>>n){
+        memset(dp,-1,sizeof dp);
+
+        for(int i=0;i<n;i++){
+            cin>>info[i].first>>info[i].second;
+        }
+        cout<<solve(0,0)<<endl;
+    }
+}
+
+

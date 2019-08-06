@@ -1,0 +1,137 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define PI acos(-1)
+#define INF 1000000000
+#define MOD 1000000007
+#define bug cout<<"ok\n";
+typedef long long ll;
+typedef unsigned long long ull;
+typedef pair<int,int> pii;
+
+int main ()
+{
+    //freopen("in.txt","r",stdin);
+    //freopen("out.txt","w",stdout);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int test;
+    cin>>test;
+    for(int tc=1;tc<=test;tc++){
+
+        int n,t,m,time;
+        cin>>n>>t>>m;
+        string cm;
+        queue<pii>Q1,Q2;
+        vector<pii>V1,V2;
+        for(int i=0;i<m;i++){
+            cin>>time>>cm;
+            if(cm=="left"){
+                V1.push_back({time,i});
+            }else{
+                V2.push_back({time,i});
+            }
+
+        }
+
+        sort(V1.begin(),V1.end());
+        sort(V2.begin(),V2.end());
+        for(int i=0;i<V1.size();i++){
+            Q1.push(V1[i]);
+        }
+        for(int i=0;i<V2.size();i++){
+            Q2.push(V2[i]);
+        }
+        int d=0,ans[m+5],trans=0;
+        while(!Q1.empty() || !Q2.empty()){
+            //cout<<Q1.size()<<' '<<Q2.size()<<endl;
+            vector<int>store;
+            int dukhar=0;
+            if(trans%2==0){
+                //dukhar=0;
+                if(Q1.size()>0){
+                    while(Q1.size()>0 && Q1.front().first<=d && dukhar<n){
+
+                        store.push_back(Q1.front().second);
+                        Q1.pop();
+                        dukhar++;
+                    }
+                }
+                for(int i=0;i<store.size();i++){
+                    ans[store[i]]=d+t;
+                }
+                if(dukhar){
+                    trans++;
+                    d+=t;
+                }
+            }else if(trans%2==1){
+                //dukhar=0;
+                if(Q2.size()>0){
+                    while(Q2.size()>0 && Q2.front().first<=d && dukhar<n){
+                        store.push_back(Q2.front().second);
+                        Q2.pop();
+                        dukhar++;
+                    }
+                }
+                for(int i=0;i<store.size();i++){
+                    ans[store[i]]=d+t;
+                }
+                if(dukhar){
+                    trans++;
+                    d+=t;
+                }
+            }
+            if(dukhar==0){
+                if(trans%2==0){
+                    if(Q1.size()>0 && Q2.size()>0){
+                        if(Q1.front().first<=Q2.front().first){
+                            d=max(Q1.front().first,d);
+                        }else{
+                            d=max(Q2.front().first+t,d+t);
+                            trans++;
+                        }
+                    }else if(Q1.size()>0 && Q2.size()==0){
+                        d=max(t,Q1.front().first);
+                    }else if(Q2.size()>0 && Q1.size()==0){
+                        d=max(d+t,Q2.front().first+t);
+                        trans++;
+                    }
+                }else if(trans%2==1){
+                    if(Q1.size()>0 && Q2.size()>0){
+                        if(Q2.front().first<=Q1.front().first){
+                            d=max(d,Q2.front().first);
+                        }else{
+                            d=max(d+t,Q1.front().first+t);
+                            trans++;
+                        }
+                    }else if(Q2.size()>0 && Q1.size()==0){
+                        d=max(d,Q2.front().first);
+                    }else if(Q1.size()>0 && Q2.size()==0){
+                        d=max(d+t,Q1.front().first+t);
+                        trans++;
+                    }
+                }
+            }
+        }
+        //cout<<m<<endl;
+        for(int i=0;i<m;i++){
+            cout<<ans[i]<<endl;
+        }
+        if(tc!=test){
+            cout<<endl;
+        }
+    }
+}
+
+/**
+2 10 10
+0 left
+10 left
+20 left
+30 left
+40 left
+50 left
+60 left
+70 left
+80 left
+90 left
+*/

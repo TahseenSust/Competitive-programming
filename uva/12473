@@ -1,0 +1,58 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+ 
+const int MX=100005;
+ 
+string s1,s2,s;
+int dp[61][61][61][61];
+
+int solve(int i,int j,int p,int q)
+{
+    if(i>j || p>q){
+        return 0;
+    }
+    int &re=dp[i][j][p][q];
+
+    if(re!=-1){
+        return re;
+    }
+
+    if(s1[i]!=s1[j]){
+        re=max(re,solve(i+1,j,p,q));
+        re=max(re,solve(i,j-1,p,q));
+    }else if(s2[p]!=s2[q]){
+        re=max(re,solve(i,j,p+1,q));
+        re=max(re,solve(i,j,p,q-1));
+    }else if(s1[i]!=s2[p]){
+        re=max(re,solve(i,j,p+1,q-1));
+        re=max(re,solve(i+1,j-1,p,q));
+        re=max(re,solve(i+1,j-1,p+1,q-1));
+    }else{
+        //cout<<i<<' '<<j<<' '<<p<<' '<<q<<endl;
+        if(i==j || p==q){
+            if(i==j && p==q){
+                re=max(re,1+solve(i+1,j-1,p+1,q-1));
+            }else{
+                re=max(re,solve(i+1,j-1,p+1,q-1));
+            }
+        }else{
+            re=max(re,2+solve(i+1,j-1,p+1,q-1));
+        }
+    }
+    return re;
+}
+
+int main()
+{
+    //freopen("uva.txt","w",stdout);
+    int t;
+    cin>>t;
+
+    for(int tc=1;tc<=t;tc++){
+        cin>>s1>>s2;
+        memset(dp,-1,sizeof dp);
+        int ans=solve(0,s1.size()-1,0,s2.size()-1);
+        printf("Case %d: %d\n",tc,ans);
+    }
+}

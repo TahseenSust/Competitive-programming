@@ -1,0 +1,102 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int n,sx,sy,p;
+string board[10];
+pair<int,int>pawn[20];
+int dp[9][9][10][(1<<8)+5];
+
+
+int dx[]={1,-1,1,-1,-2,-2,2,2};
+int dy[]={2,2,-2,-2,1,-1,1,-1};
+
+bool valid(int x,int y)
+{
+    if(x>=0 && y>=0 && x<8 && y<8 && board[x][y]!='K' && board[x][y]!='p'){
+        return 1;
+    }
+    return 0;
+}
+
+
+int bfs(int x1,int y1,int x2,int y2)
+{
+    bool vis[10][10]={0};
+    int dis[10][10]={0};
+    queue<pair<int,int> >Q;
+    Q.push({x1,y1});
+    dis[x1][y1]=0;
+    vis[x1][y1]=1;
+    while(!Q.empty()){
+        pair<int,int>u=Q.front();
+        Q.pop();
+        for(int i=0;i<8;i++){
+            int tx=u.first+dx[i];
+            int ty=u.second+dy[i];
+            if(valid(tx,ty)){
+                if(!vis[tx][ty]){
+                    vis[tx][ty]=1;
+                    dis[tx][ty]=1+dis[u.first][u.second];
+                    if(tx==x2 && ty==y2){
+                        return dis[tx][ty];
+                    }
+                    Q.push({tx,ty});
+                }
+            }
+        }
+    }
+    return 100000000;
+}
+
+bool solve(int x,int y,int mv,int mask)
+{
+    if(mask==(1<<p)-1) return 1;
+    if(dp[x][y][mv][mask]!=-1){
+        return dp[x][y][mv][mask];
+    }
+    for(int i=0;i<p;i++){
+        if((mask>>i)&1) continue;
+
+        int dis=bfs(x,y,pawn[i].first,pawn[i].second);
+        if(dis<=mv){
+            board[pawn[i].first][pawn[i].second]='.';
+            if(solve(pawn[i].first,pawn[i].second,mv-dis,mask|(1<<i))){
+                return dp[x][y][mv][mask]=1;
+            }
+            board[pawn[i].first][pawn[i].second]='P';
+        }
+    }
+    return dp[x][y][mv][mask]=0;
+}
+
+
+int main()
+{
+    //freopen("in.txt","r",stdin);
+    //freopen("out.txt","w",stdout);
+    int t;
+    cin>>t;
+    while(t--){
+        p=0;
+        cin>>n;
+        for(int i=0;i<8;i++){
+            cin>>board[i];
+            for(int j=0;j<8;j++){
+                if(board[i][j]=='k'){
+                    sx=i;
+                    sy=j;
+                }
+                if(board[i][j]=='P'){
+                    pawn[p].first=i;
+                    pawn[p++].second=j;
+                }
+            }
+        }
+        memset(dp,-1,sizeof dp);
+        bool flag=solve(sx,sy,n,0);
+        cout<<(flag?"Yes\n":"No\n");
+    }
+
+
+}
+

@@ -1,0 +1,69 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+
+
+typedef long long ll;
+
+vector<int>G[1005];
+
+int n,k,u,v;
+
+int dp[1005];
+
+void dfs(int u,int p)
+{
+    dp[u]=1;
+
+    int child=0;
+
+    priority_queue<int>pq;
+
+    for(int i=0;i<G[u].size();i++){
+        int v=G[u][i];
+        if(v==p) continue;
+        dfs(v,u);
+        child++;
+        pq.push(dp[v]);
+    }
+    if(child<k){
+        dp[u]=1;
+    }else{
+        child=k;
+        while(!pq.empty() && child){
+            dp[u]+=pq.top();
+            child--;
+            pq.pop();
+        }
+    }
+
+
+}
+
+
+int main()
+{
+    //freopen("input.txt","r",stdin);
+    //freopen("out.txt","w",stdout);
+    int t;
+
+    cin>>t;
+
+    for(int tc=1;tc<=t;tc++){
+        cin>>n>>k;
+        for(int i=1;i<=n;i++){
+            G[i].clear();
+        }
+        for(int i=0;i<n-1;i++){
+            cin>>u>>v;
+            G[u].push_back(v);
+            G[v].push_back(u);
+        }
+
+        memset(dp,0,sizeof dp);
+
+        dfs(1,-1);
+
+        printf("Case %d: %d\n",tc,dp[1]);
+    }
+}

@@ -1,0 +1,29 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+
+
+int main()
+{
+    //freopen("uva.txt","r",stdin);
+    ll p,q,r,s;
+    while(cin>>p>>q>>r>>s){
+
+        long double ans=1;
+
+        for(ll i=q+1,j=p-q;i<=p;i++,j--){
+            ans*=(double)i;
+            if(j>0){
+                ans/=(double)j;
+            }
+        }
+        for(ll i=s+1,j=r-s;i<=r;i++,j--){
+            if(j>0){
+                ans*=(double)j;
+            }
+            ans/=(double)i;
+        }
+        cout<<setprecision(5)<<fixed<<ans<<endl;
+    }
+}
