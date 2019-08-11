@@ -1,3 +1,6 @@
+//1,1,2,5,14,42,132,429,1430,…
+
+
 #include <bits/stdc++.h>
 using namespace std;
 
