@@ -1,0 +1,11 @@
+struct data{
+  int x,w;
+  data(){}
+  data(int a,int b){
+    x = a;
+    w = b;
+  }
+  bool operator <(const data &yoo)const{
+    return yoo.w < w;
+  }
+};
