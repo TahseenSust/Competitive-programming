@@ -19,7 +19,4 @@ void djkstra(int s)
             }
         }
     }
-    for(int i=0;i<500;i++){
-        shortest_path[s][i]=dis[i];
-    }
 }
