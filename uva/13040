@@ -1,0 +1,88 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+bool check(int mask,int pos)
+{
+    return (mask&(1<<pos));
+}
+
+int n,deg[16];
+ll x[16],y[16],dp[(1<<15)+5];
+ll cost[16][16];
+
+int cnt(int mask)
+{
+    int o=0;
+    for(int i=0;i<n;i++){
+        o+=!(mask&(1<<i));
+    }
+    return o;
+}
+
+
+
+ll solve(int mask)
+{
+    if(cnt(mask)<=2) return 0;
+
+    ll &re=dp[mask];
+
+    if(re!=-1) return re;
+
+    re=1ll<<60;
+
+    for(int i=0;i<n;i++){
+        if(!check(mask,i)){
+            for(int j=0;j<n;j++){
+                if(!check(mask,j))
+                    re=min(re,solve((mask^(1<<i))^(1<<j))+cost[i][j]);
+            }
+        }
+    }
+    return re;
+}
+
+int main()
+{
+    //freopen("input.txt","r",stdin);
+    //freopen("output.txt","w",stdout);
+    int u,v,m,t;
+    scanf("%d",&t);
+    for(int tc=1;tc<=t;tc++){
+        scanf("%d",&n);
+        for(int i=0;i<n;i++){
+            scanf("%lld%lld",&x[i],&y[i]);
+        }
+        scanf("%d",&m);
+        memset(deg,0,sizeof deg);
+        for(int i=0;i<m;i++){
+            scanf("%d%d",&u,&v);
+            deg[u]++;
+            deg[v]++;
+        }
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                cost[i][j]=(x[i]-x[j])*(x[i]-x[j])+(y[i]-y[j])*(y[i]-y[j]);
+            }
+        }
+        for(int k=0;k<n;k++){
+            for(int i=0;i<n;i++){
+                for(int j=0;j<n;j++){
+                    cost[i][j]=min(cost[i][j],cost[i][k]+cost[k][j]);
+                }
+            }
+        }
+        int mask=0;
+
+        for(int i=0;i<n;i++){
+            if(deg[i]%2==0){
+                mask=mask|(1<<i);
+            }
+        }
+        memset(dp,-1,sizeof dp);
+        ll ans=solve(mask);
+
+        printf("Case %d: %lld\n",tc,ans);
+    }
+}
