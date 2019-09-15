@@ -1,0 +1,9 @@
+vector<int> arr3(10); 
+  
+// sorting initial containers 
+sort(arr1.begin(), arr1.end()); 
+sort(arr2.begin(), arr2.end()); 
+
+// using merge() to merge the initial containers 
+merge(arr1.begin(), arr1.end(), arr2.begin(), arr2.end(), arr3.begin());
+//arr3 will be sorted
