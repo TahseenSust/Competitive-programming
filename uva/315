@@ -1,0 +1,76 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int n; // number of nodes
+vector<int> adj[104]; // adjacency list of graph
+
+vector<bool> visited;
+vector<int> tin, low;
+int timer;
+set<int>st;
+
+void IS_CUTPOINT(int v)
+{
+    st.insert(v);
+}
+void dfs(int v, int p = -1) {
+    visited[v] = true;
+    tin[v] = low[v] = timer++;
+    int children=0;
+    for (int to : adj[v]) {
+        if (to == p) continue;
+        if (visited[to]) {
+            low[v] = min(low[v], tin[to]);
+        } else {
+            dfs(to, v);
+            low[v] = min(low[v], low[to]);
+            if (low[to] >= tin[v] && p!=-1)
+                IS_CUTPOINT(v);
+            ++children;
+        }
+    }
+    if(p == -1 && children > 1)
+        IS_CUTPOINT(v);
+}
+
+int find_cutpoints() {
+    timer = 0;
+    visited.assign(n, false);
+    tin.assign(n, -1);
+    low.assign(n, -1);
+    st.clear();
+    for (int i = 0; i < n; ++i) {
+        if (!visited[i])
+            dfs (i);
+    }
+    return st.size();
+}
+
+
+int main()
+{
+    int u;
+    while(cin>>n && n){
+
+        while(1){
+            cin>>u;
+            if(u==0){
+                break;
+            }
+            string str;
+            getline(cin,str);
+            int x;
+            stringstream ss(str);
+            while(ss>>x){
+                adj[u-1].push_back(x-1);
+                adj[x-1].push_back(u-1);
+            }
+        }
+
+        cout<<find_cutpoints()<<endl;
+
+        for(int i=0;i<n;i++){
+            adj[i].clear();
+        }
+    }
+}
