@@ -1,0 +1,83 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int n; // number of nodes
+vector<int> adj[1005]; // adjacency list of graph
+
+vector<bool> visited;
+vector<int> tin, low;
+int timer;
+
+bool road[1005][1005];
+
+set<pair<int,int>>st;
+
+void IS_BRIDGE(int a,int b)
+{
+    road[a][b]=1;
+    st.insert({a,b});
+}
+
+void dfs(int v, int p = -1) {
+    visited[v]=1;
+    tin[v] = low[v] = timer++;
+    for (int to : adj[v]) {
+        if (to == p) continue;
+        if (visited[to]) {
+            low[v] = min(low[v], tin[to]);
+            if(road[to][v]==0)
+                IS_BRIDGE(v, to);
+        } else {
+            dfs(to, v);
+            low[v] = min(low[v], low[to]);
+            if (low[to] > tin[v]){
+                IS_BRIDGE(v, to);
+                IS_BRIDGE(to, v);
+            }else if(road[to][v]==0)
+                IS_BRIDGE(v, to);
+        }
+    }
+}
+
+void find_bridges() {
+    timer = 0;
+    memset(road,0,sizeof road);
+    visited.assign(n, 0);
+    tin.assign(n, -1);
+    low.assign(n, -1);
+    st.clear();
+    dfs(0);
+}
+
+
+int main()
+{
+    //freopen("input.txt","r",stdin);
+    //freopen("output.txt","w",stdout);
+    int u,e,v,tc=1;
+    while(cin>>n>>e && n && e){
+        for(int i=0;i<e;i++){
+            cin>>u>>v;
+            adj[u-1].push_back(v-1);
+            adj[v-1].push_back(u-1);
+        }
+
+        find_bridges();
+
+        cout<<tc++<<endl<<endl;
+
+        for(auto x:st){
+            printf("%d %d\n",x.first+1,x.second+1);
+        }
+
+        printf("#\n");
+
+        for(int i=0;i<n;i++){
+            adj[i].clear();
+        }
+
+    }
+
+}
+
+
