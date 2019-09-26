@@ -1,0 +1,82 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int n; // number of nodes
+vector<int> adj[100005]; // adjacency list of graph
+
+vector<bool> visited;
+vector<int> tin, low;
+int timer;
+
+set<pair<int,int>>st;
+
+void IS_BRIDGE(int a,int b)
+{
+    if(a>b) swap(a,b);
+    st.insert({a,b});
+}
+
+void dfs(int v, int p = -1) {
+    visited[v] = true;
+    tin[v] = low[v] = timer++;
+    for (int to : adj[v]) {
+        if (to == p) continue;
+        if (visited[to]) {
+            low[v] = min(low[v], tin[to]);
+        } else {
+            dfs(to, v);
+            low[v] = min(low[v], low[to]);
+            if (low[to] > tin[v])
+                IS_BRIDGE(v, to);
+        }
+    }
+}
+
+void find_bridges() {
+    timer = 0;
+    visited.assign(n, false);
+    tin.assign(n, -1);
+    low.assign(n, -1);
+    st.clear();
+    for (int i = 0; i < n; ++i) {
+        if (!visited[i])
+            dfs(i);
+    }
+}
+
+
+int main()
+{
+    //freopen("input.txt","r",stdin);
+    //freopen("output.txt","w",stdout);
+    int u,e,v;
+    while(cin>>n){
+
+        for(int i=0;i<n;i++){
+            char ch;
+            cin>>u>>ch>>e>>ch;
+            while(e--){
+                cin>>v;
+                adj[u].push_back(v);
+                adj[v].push_back(u);
+            }
+        }
+
+        find_bridges();
+
+        printf("%d critical links\n",st.size());
+
+        for(auto x:st){
+            printf("%d - %d\n",x.first,x.second);
+        }
+
+        printf("\n");
+
+        for(int i=0;i<n;i++){
+            adj[i].clear();
+        }
+
+    }
+
+}
+
