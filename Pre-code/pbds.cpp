@@ -1,3 +1,12 @@
+//find_by_order() - returns an iterator to the k-th largest element (counting from zero)
+
+//order_of_key() - the number of items in a set that are strictly smaller than our item
+
+/*
+me.insert({x, t++});
+me.erase(me.lower_bound({x, 0}));
+*/
+
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
