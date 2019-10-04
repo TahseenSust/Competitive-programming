@@ -15,9 +15,27 @@ struct Query {
     if (p.first / BLOCK_SIZE != q.first / BLOCK_SIZE)
             return p < q;
         return (p.first / BLOCK_SIZE & 1) ? (p.second < q.second) : (p.second > q.second);
-    }
+    }    
     */
 };
+
+/*
+We know it can be optimized a little if for even blocks we use the reverse order for the right boundary:
+
+
+struct Query {
+	int l, r, idx;
+	
+	inline pair<int, int> toPair() const {
+		return make_pair(l / block, ((l / block) & 1) ? -r : +r);
+	}
+};
+
+inline bool operator<(const Query &a, const Query &b) {
+	return a.toPair() < b.toPair();
+}
+
+*/
 
 vector<int> mo_s_algorithm(vector<Query> queries) {
     vector<int> answers(queries.size());
