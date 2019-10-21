@@ -10,8 +10,7 @@ struct Palindromic_Tree
 {
 	int next[MAXN][N];
 	int fail[MAXN];
-	long long cnt[MAXN]; // kotobar palidromic sub string ta ase
-
+	long long cnt[MAXN]; // কতবার palindromic sub-string টি মুল string এর মধ্যে 
 	int num[MAXN]; //many palindromic sub-string ends in that position
 	int len[MAXN];
 	int S[MAXN];
