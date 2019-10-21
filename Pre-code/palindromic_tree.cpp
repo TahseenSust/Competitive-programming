@@ -19,7 +19,7 @@ struct Palindromic_Tree
 	int S[MAXN];
 	int last;
 	int n;
-	int p; // total node
+	int p; // total node(number of unique palindrom in string)
 
 
 	int newnode(int l)
