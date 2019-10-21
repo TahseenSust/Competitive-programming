@@ -11,7 +11,10 @@ struct Palindromic_Tree
 	int next[MAXN][N];
 	int fail[MAXN];
 	long long cnt[MAXN]; // কতবার palindromic sub-string টি মুল string এর মধ্যে 
+
 	int num[MAXN]; //many palindromic sub-string ends in that position
+	int start[MAXN];
+	int end[MAXN];
 	int len[MAXN];
 	int S[MAXN];
 	int last;
@@ -44,7 +47,7 @@ struct Palindromic_Tree
 		return x;
 	}
 
-	void add(int c)
+	void add(int c,int i)
 	{
 		c-='a';
 		S[++n]=c;
@@ -53,6 +56,8 @@ struct Palindromic_Tree
 
 		if(!next[cur][c]){
 			int now = newnode(len[cur]+2);
+			end[now]=i;
+			start[now]=i-len[cur]-2+1;
 			fail[now] = next[get_fail(fail[cur])][c];
 			next[cur][c]=now;
 			num[now]=num[fail[now]]+1;
@@ -70,7 +75,7 @@ struct Palindromic_Tree
 	{
 		for(int i=1;i<=p-2;i++)
 		{
-			printf("%c \n",S[i]+'a');
+			printf("%c ",S[i]+'a');
 		}
 		printf("\n");
 
@@ -82,6 +87,16 @@ struct Palindromic_Tree
 		for(int i=2;i<p;i++)
 		{
 			printf("%d ",num[i]);
+		}
+		printf("\n");
+		for(int i=2;i<p;i++)
+		{
+			printf("%d ",start[i]);
+		}
+		printf("\n");
+		for(int i=2;i<p;i++)
+		{
+			printf("%d ",end[i]);
 		}
 		printf("\n");
 	}
@@ -105,9 +120,12 @@ int main()
 
 		for(int i=0;i<str.size();i++)
 		{
-			tt.add(str[i]);
-			cout<<tt.num[tt.last]<<endl;
+			tt.add(str[i],i);
 		}
+
+		tt.count();
+
+		tt.print();
 
 		printf("Case #%d: %d\n",tc,tt.p-2);
 	}
