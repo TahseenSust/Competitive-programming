@@ -1,43 +1,116 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int N = 1e5+10;
-int tree[N][26], idx;
-int len[N], link[N], t;
-char s[N]; // 1-indexed
 
-void extend(int p) {
-  while(s[p - len[t] - 1] != s[p]) t = link[t];
-  int x = link[t], c = s[p] - 'a';
-  while(s[p - len[x] - 1] != s[p]) x = link[x];
-  if(!tree[t][c]) {
-    tree[t][c] = ++idx;
-    len[idx] = len[t] + 2;
-    link[idx] = len[idx] == 1 ? 2 : tree[x][c];
-  } t = tree[t][c];
-}
+const int MAXN=210005;
+const int N=26;
+
+
+struct Palindromic_Tree
+{
+	int next[MAXN][N];
+	int fail[MAXN];
+	long long cnt[MAXN]; // kotobar palidromic sub string ta ase
+
+	int num[MAXN]; //many palindromic sub-string ends in that position
+	int len[MAXN];
+	int S[MAXN];
+	int last;
+	int n;
+	int p; // total node
+
+
+	int newnode(int l)
+	{
+		for(int i=0;i<N;i++) next[p][i]=0;
+		cnt[p]=0;
+		num[p]=0;
+		len[p]=l;
+		return p++;
+	}
+
+	void init()
+	{
+		p=0;
+		newnode(0);
+		newnode(-1);
+		last=0;
+		n=0;
+		S[n]=-1;
+		fail[0]=1;
+	}
+
+	int get_fail(int x){ // KMP
+		while(S[n-len[x]-1]!=S[n]) x=fail[x];
+		return x;
+	}
+
+	void add(int c)
+	{
+		c-='a';
+		S[++n]=c;
+
+		int cur = get_fail(last);
+
+		if(!next[cur][c]){
+			int now = newnode(len[cur]+2);
+			fail[now] = next[get_fail(fail[cur])][c];
+			next[cur][c]=now;
+			num[now]=num[fail[now]]+1;
+		}
+		last=next[cur][c];
+		cnt[last]++;
+	}
+
+	void count()
+	{
+		for(int i=p-1;i>=0;--i) cnt[fail[i]]+=cnt[i];
+	}
+
+	void print()
+	{
+		for(int i=1;i<=p-2;i++)
+		{
+			printf("%c \n",S[i]+'a');
+		}
+		printf("\n");
+
+		for(int i=2;i<p;i++)
+		{
+			printf("%lld ",cnt[i]);
+		}
+		printf("\n");
+		for(int i=2;i<p;i++)
+		{
+			printf("%d ",num[i]);
+		}
+		printf("\n");
+	}
+}tt;
+
 
 int main()
 {
-	int tt;
+	string str;
 
-	scanf("%d",&tt);
+	int t;
 
-	for(int tc=1;tc<=tt;tc++){
-		memset(tree,0,sizeof tree);
-		len[1] = -1, link[1] = 1;
-		len[2] = 0, link[2] = 1;
-		idx = t = 2;
+	cin>>t;
 
-		scanf("%s",s+1);
-    int len=strlen(s+1)+1;// important
-		for(int i=1;i<len;i++){
-			extend(i);
+	for(int tc=1;tc<=t;tc++){
+
+		cin>>str;
+
+		tt.init();
+
+
+		for(int i=0;i<str.size();i++)
+		{
+			tt.add(str[i]);
+			cout<<tt.num[tt.last]<<endl;
 		}
 
-		printf("Case #%d: %d\n",tc,idx-2);
-
+		printf("Case #%d: %d\n",tc,tt.p-2);
 	}
-
-
+	return 0;
 }
