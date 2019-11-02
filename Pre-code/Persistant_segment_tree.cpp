@@ -2,7 +2,7 @@
 using namespace std;
 
 #define mid ((b+e)/2)
-#define SIZE 8*100000*25
+#define SIZE 100000*25
 
 int left_node[SIZE], right_node[SIZE], st[SIZE], TOTAL = 0,n,arr[100005];
 
