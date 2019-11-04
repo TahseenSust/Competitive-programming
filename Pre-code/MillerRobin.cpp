@@ -18,12 +18,17 @@ ll bigmod(ll a, ll p, ll m)
     }
     return ret;
 }
-bool millerRobin(ll p, int iter = 20)
+int arrr[]={2,3,5,7,11,13,17,19,23};
+bool millerRobin(ll p, int iter = 5)
 {
     if(p==3 || p==2 || p==5) return true;
     if(p%2==0) return 0;
     if(p<3) return 0;
-
+    for(int i=0;i<9;i++)
+    {
+        if(p==arrr[i])return true;
+        if(p%arrr[i]==0)return false;
+    }
     for(int i = 0; i<iter; i++)
     {
         ll a = rand() % (p-4) + 2;
