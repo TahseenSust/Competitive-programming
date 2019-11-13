@@ -7,3 +7,9 @@ sort(arr2.begin(), arr2.end());
 // using merge() to merge the initial containers 
 merge(arr1.begin(), arr1.end(), arr2.begin(), arr2.end(), arr3.begin());
 //arr3 will be sorted
+
+// erase the 6th element
+myvector.erase (myvector.begin()+5);
+
+// erase the first 3 elements:
+myvector.erase (myvector.begin(),myvector.begin()+3);
