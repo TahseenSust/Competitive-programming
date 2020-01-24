@@ -1,0 +1,94 @@
+#include<cstdio>
+#include<vector>
+#include<cstring>
+#include<map>
+#include<algorithm>
+#include<iostream>
+using namespace std;
+
+typedef long long ll;
+
+struct TRIE{
+
+    struct data
+    {
+        int tree[28];
+        int complete;
+    }trie[10000*40+5];
+
+    int tot_node=1,cnt[30];
+
+    void Clear(){
+        tot_node=1;
+        memset(cnt,0,sizeof cnt);
+        memset(trie,0,sizeof trie);
+    }
+
+
+    void Insert_trie_shuja(char *text)
+    {
+        int node=1;
+        for(int i=0;text[i];i++){
+            int id=(int) (text[i]-'a');
+            if(trie[node].tree[id]==0){
+                trie[node].tree[id]=++tot_node;
+                if(i){
+                    cnt[id]++;
+                }
+            }
+            node=trie[node].tree[id];
+        }
+        trie[node].complete++;
+    }
+
+    void Insert_trie_ulta(char *text)
+    {
+        int node=1,len=strlen(text);
+        for(int i=len-1;i>=0;i--){
+            int id=(int) (text[i]-'a');
+            if(trie[node].tree[id]==0){
+                trie[node].tree[id]=++tot_node;
+                if(i!=len-1){
+                    cnt[id]++;
+                }
+            }
+            node=trie[node].tree[id];
+        }
+        trie[node].complete++;
+    }
+}prefix,suffix;
+
+
+int main(int argc, char const *argv[])
+{
+	int t;
+    char text[50];
+
+	while(scanf("%d",&t)!=EOF){
+        int vis[30]={0};
+
+        prefix.Clear();
+        suffix.Clear();
+
+        for(int i=0;i<t;i++){
+            scanf("%s",text);
+            prefix.Insert_trie_shuja(text);
+            suffix.Insert_trie_ulta(text);
+            if(strlen(text)==1){
+                vis[text[0]-'a']=1;
+            }
+        }
+
+        ll ans=(ll)(suffix.tot_node-1)*(ll)(prefix.tot_node-1);
+
+        for(int i=0;i<26;i++){
+            ans-=(ll)prefix.cnt[i]*(ll)suffix.cnt[i];
+            ans+=vis[i];
+        }
+
+        printf("%lld\n",ans);
+    }
+
+
+
+}
