@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+int n,k;
+double dp[102][12];
+
+double solve(int pos,int last)
+{
+    if(pos>=n) return 1.0;
+
+    double &ret=dp[pos][last];
+
+    if(ret==ret){
+        return ret;
+    }
+
+    ret=0.0;
+
+    if(pos==0){
+        for(int i=0;i<=k;i++){
+            ret+=solve(pos+1,i);
+        }
+    }else{
+        if(last-1>=0){
+            ret+=solve(pos+1,last-1);
+        }
+        if(last+1<=k){
+            ret+=solve(pos+1,last+1);
+        }
+        ret+=solve(pos+1,last);
+   }
+    return ret;
+}
+
+
+int main()
+{
+    //freopen("input.txt","r",stdin);
+    //freopen("output.txt","w",stdout);
+
+    while(cin>>k>>n){
+
+        memset(dp,-1,sizeof dp);
+
+        double u=solve(0,0);
+
+
+        for(int i=0;i<n;i++){
+            u/=(double)(k+1.0);
+        }
+
+        printf("%.5f\n",u*100.00);
+    }
+}
+
