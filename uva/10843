@@ -1,0 +1,23 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+ll power(ll n)
+{
+    ll ret=1;
+    for(ll i=1;i<=n-2;i++){
+        ret=(ret*n)%2000000011;
+    }
+    return ret;
+}
+
+int main()
+{
+    ll t,n;
+    cin>>t;
+    for(int tc=1;tc<=t;tc++){
+        cin>>n;
+        cout<<"Case #"<<tc<<": "<<power(n)<<endl;
+    }
+}
