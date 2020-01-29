@@ -1,7 +1,7 @@
 Knuth-Morris-Pratt
 ///returns the longest proper prefix array of pattern p
 ///where lps[i]=longest proper prefix which is also suffix of p[0...i]
-vector<int> build_lps(string p)
+vector<int> build_lps(string p) // For pattern
 {
     int sz = p.size();
     vector<int> lps;
