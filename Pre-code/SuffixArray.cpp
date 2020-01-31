@@ -110,9 +110,7 @@ void buildlcp()
 
 int main()
 {
-    int p,q;
     scanf("%s",str);
-    scanf("%d%d",&p,&q);
     nnn=strlen(str);
     SortSuffix();
     buildlcp();
