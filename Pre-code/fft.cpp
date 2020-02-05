@@ -1,3 +1,4 @@
+//shuhag vai
 namespace ntt
 {
 	struct num
