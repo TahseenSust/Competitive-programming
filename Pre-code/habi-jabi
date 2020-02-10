@@ -1,0 +1,8 @@
+Calculate Day from date
+F=k+ [(13*m-1)/5] +D+ [D/4] +[C/4]-2*C where
+k is  the day of the month.
+m is the month number.
+D is the last two digits of the year.
+C is the first two digits of the year.
+March is 1, April is 2….. January is 11 and February is 12.
+So the year starts from March and ends with February. So if the given date has month as January or February subtract 1 from the year
