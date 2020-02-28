@@ -103,6 +103,20 @@ bool cmp(query &a, query &b) {
   return a.t < b.t;
 }
 
+int last[N];
+for(int i = 0; i < N; i++)
+  last[i] = a[i];
+
+for(int i = 0; i < Q; i++) {
+  if( this is a query ) {
+    store query {l, r, idx, id++} // idx is number of updates before, id is this query's id
+  }
+  if( this is an update ) {
+    u[++idx] = {x, last[x], y};
+    last[x] = y;
+  }
+}
+
 int l = 0, r = -1, t = 0; // Note that these values may change
                           // Depending on your implementation of other part
 for(int i = 0; i < Q; i++) {
