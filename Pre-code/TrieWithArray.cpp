@@ -1,17 +1,12 @@
 #include<bits/stdc++.h>
 using namespace std;
-
 struct data
 {
     int tree[28];
     int complete;
 }trie[500001];
-
 char text[25];
-
 int tot_node=1;
-
-
 void Insert_trie()
 {
     int node=0;
@@ -24,8 +19,6 @@ void Insert_trie()
     }
     trie[node].complete++;
 }
-
-
 int Search_Trie()
 {
     int node=1;
@@ -39,23 +32,5 @@ int Search_Trie()
 
 int main(int argc, char const *argv[])
 {
-	int t;
-	scanf("%d",&t);
-
-    for(int i=0;i<t;i++){
-        scanf("%s",text);
-        Insert_trie();
-    }
-
-    scanf("%d",&t);
-
-
-    for(int i=0;i<t;i++){
-        scanf("%s",text);
-        printf("%d\n",Search_Trie());
-    }
-
-
-
-
+	
 }
