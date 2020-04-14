@@ -1,0 +1,48 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+bool check(int mask,int pos){
+    return mask&(1<<pos);
+}
+int SET(int mask,int pos){
+    return mask|(1<<pos);
+}
+
+struct data{
+    int a,b,c,s;
+}info[95];
+int n,dp[85][(1<<9)+15];
+
+int solve(int i,int mask)
+{
+    if(i==n){
+        if(mask==((1<<9)-1)) return 0;
+        return -100000;
+    }
+    int &re=dp[i][mask];
+    if(re!=-1) return re;
+    re=-100000;
+    if(!check(mask,info[i].a) && !check(mask,info[i].b) && !check(mask,info[i].c)){
+        re=max(re,info[i].s+solve(i+1,mask|SET(mask,info[i].a)|SET(mask,info[i].b)|SET(mask,info[i].c)));
+    }
+    re=max(re,solve(i+1,mask));
+    return re;
+}
+
+
+int main()
+{
+    int t=1;
+    while(cin>>n && n){
+        for(int i=0;i<n;i++){
+            cin>>info[i].a>>info[i].b>>info[i].c>>info[i].s;
+            info[i].a--;
+            info[i].b--;
+            info[i].c--;
+        }
+        memset(dp,-1,sizeof dp);
+        int re=solve(0,0);
+        if(re<0) re=-1;
+        printf("Case %d: %d\n",t++,re);
+    }
+}
