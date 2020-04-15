@@ -1,0 +1,52 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int n,m,a[110],tot,offset=2501,tt=1;
+
+int dp1[102][52][5002];
+int dp2[102][52][5002];
+int vis1[102][52][5002];
+int vis2[102][52][5002];
+
+int solve1(int i,int cnt,int sum)
+{
+    if(cnt==n){
+        return sum*(tot-sum);
+    }
+    if(i==(n+m)) return INT_MIN;
+    int &re=dp1[i][cnt][sum+offset];
+    if(vis1[i][cnt][sum+offset]==tt) return re;
+    vis1[i][cnt][sum+offset]=tt;
+    re=INT_MIN;
+    re=max(solve1(i+1,cnt+1,sum+a[i]),solve1(i+1,cnt,sum));
+    return re;
+}
+
+int solve2(int i,int cnt,int sum)
+{
+    if(cnt==n){
+        return sum*(tot-sum);
+    }
+    if(i==(n+m)) return 10000;
+    int &re=dp2[i][cnt][sum+offset];
+    if(vis2[i][cnt][sum+offset]==tt) return re;
+    vis2[i][cnt][sum+offset]=tt;
+    re=10000;
+    re=min(solve2(i+1,cnt+1,sum+a[i]),solve2(i+1,cnt,sum));
+    return re;
+}
+
+int main()
+{
+    //freopen("out.txt","w",stdout);
+    while(scanf("%d%d",&n,&m)!=EOF){
+        if(n>m) swap(n,m);
+        tot=0;
+        for(int i=0;i<n+m;i++){
+            scanf("%d",&a[i]);
+            tot+=a[i];
+        }
+        printf("%d %d\n",solve1(0,0,0),solve2(0,0,0));
+        tt++;
+    }
+}
