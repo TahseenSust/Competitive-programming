@@ -1,0 +1,92 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int I,cnt,tk[10];
+pair<int,int>order[20];
+
+vector<int>to_vector(int mask)
+{
+    vector<int>v;
+    while(v.size()<I){
+        v.push_back(mask%10);
+        mask/=10;
+    }
+    reverse(v.begin(),v.end());
+    return v;
+}
+
+int dp[1000000];
+
+int solve(int mask)
+{
+    if(mask==0){
+        return 0;
+    }
+
+    int &re=dp[mask];
+
+    if(re!=-1){
+        return re;
+    }
+
+    re=INT_MAX;
+
+    vector<int>v=to_vector(mask);
+
+    for(int i=0;i<cnt;i++){
+        vector<int>tmp=to_vector(order[i].first);
+        int mm=0;
+        bool flag=1;
+        for(int j=0;j<I;j++){
+            if(v[j]-tmp[j]>=0){
+                mm=mm*10+(v[j]-tmp[j]);
+            }else{
+                flag=0;
+            }
+        }
+        if(flag){
+            re=min(re,order[i].second+solve(mm));
+        }
+    }
+    return re;
+}
+
+int main()
+{
+    while(cin>>I){
+        cnt=0;
+        for(int i=0;i<I;i++){
+            cin>>tk[i];
+            int mask=0;
+            for(int j=0;j<I;j++){
+                if(i==j){
+                    mask=mask*10+1;
+                }else{
+                    mask=mask*10+0;
+                }
+            }
+            order[cnt++]={mask,tk[i]};
+        }
+        int o;
+        cin>>o;
+        for(int i=0;i<o;i++){
+            int x,mask=0;
+            for(int j=0;j<I;j++){
+                cin>>x;
+                mask=mask*10+x;
+            }
+            cin>>x;
+            order[cnt++]={mask,x};
+        }
+        cin>>o;
+        memset(dp,-1,sizeof dp);
+        for(int i=0;i<o;i++){
+            int mask=0,x;
+            for(int j=0;j<I;j++){
+                cin>>x;
+                mask=mask*10+x;
+            }
+            cout<<solve(mask)<<endl;
+        }
+    }
+}
