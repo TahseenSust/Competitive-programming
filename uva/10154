@@ -1,0 +1,36 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<pair<int,int>>v;
+
+bool cmp(pair<int,int>a,pair<int,int>b)
+{
+    return a.second<b.second;
+}
+
+int main()
+{
+    int w,s;
+    while(cin>>w>>s){
+        v.push_back({w,s});
+    }
+    sort(v.begin(),v.end(),cmp);
+
+    int dp[6000];
+
+    memset(dp,31,sizeof dp);
+
+    dp[0]=0;
+
+    int mx=0;
+
+    for(int i=0;i<v.size();i++){
+        for(int j=mx;j>=0;j--){
+            if(dp[j]+v[i].first<=v[i].second){
+                dp[j+1]=min(dp[j+1],dp[j]+v[i].first);
+                mx=max(mx,j+1);
+            }
+        }
+    }
+    cout<<mx<<endl;
+}
