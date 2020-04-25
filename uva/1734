@@ -1,0 +1,88 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+const ll mod=1000000007;
+
+vector<int>num;
+
+ll cnt[(1<<10)+5];
+
+void init(int x)
+{
+	num.clear();
+	while(x){
+		num.push_back(x%10);
+		x/=10;
+	}
+	//reverse(num.begin(),num.end());
+}
+ll dp2[12][3][3][(1<<10)+5][(1<<10)+5];
+ll solve(int pos,int first,int small,int mask1,int mask2)
+{
+	if(pos<0){
+		return (mask1==mask2);
+	}
+	
+	ll &re=dp2[pos][first][small][mask1][mask2],en=small?9:num[pos];
+	
+	if(small==1 && re!=-1) return re;
+	
+	re=0;
+	
+	if(first){
+		re=solve(pos-1,1,1,mask1,mask2);
+	}
+	
+	for(int i=first;i<en;i++){
+		if(mask1&(1<<i)){
+			re=re+solve(pos-1,0,1,mask1,mask2|(1<<i));
+		}
+	}
+	if(mask1&(1<<en)){
+		re=re+solve(pos-1,0,small,mask1,mask2|(1<<en));
+	}
+	return re;
+}
+
+ll dp[(1<<10)+5][(1<<10)+5];
+
+ll dp_func(int mask,int m)
+{
+	if(m==(1<<10)) return (mask!=0)%mod;
+	
+	ll &re=dp[mask][m];
+	
+	if(re!=-1) return re%mod;
+	
+	re=0;
+	
+	if((mask&m)==0){
+		re=re+((cnt[m]%mod)*(dp_func(mask|m,m+1)%mod))%mod;
+		re=re%mod;
+	}
+	re=(re+dp_func(mask,m+1)%mod)%mod;
+	return re%mod;
+}
+
+
+int main()
+{
+	int n,t;
+	scanf("%d",&t);
+	memset(dp2,-1,sizeof dp2);
+	for(int tc=1;tc<=t;tc++){
+		scanf("%d",&n);
+		init(n);
+		
+		for(int i=1;i<(1<<10);i++){
+			cnt[i]=solve((int)num.size()-1,1,0,i,0);
+		}
+		
+		memset(dp,-1,sizeof dp);
+		printf("Case %d: %lld\n",tc,dp_func(0,0));
+	}
+}
+
+
