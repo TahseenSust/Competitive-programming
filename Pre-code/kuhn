@@ -1,0 +1,29 @@
+int Left[MAX],Right[MAX],seen[MAX];
+vector<int>adj[N];
+
+bool kuhn(int u)
+{
+    for(int i=0;i<adj[u].size();i++){
+        int v=adj[u][i];
+        if(seen[v]) continue;
+        seen[v]=1;
+        if(Right[v]==-1 || kuhn(Right[v])){
+            Right[v]=u;
+            Left[u]=v;
+            return true;
+        }
+    }
+    return false;
+}
+
+int bipertitematching()
+{
+    memset(Left,-1,sizeof Left);
+    memset(Right,-1,sizeof Right);
+    int cnt=0;
+    for(int i=0;i<m;i++) //eikhane m hocche left part er total node
+    {
+        memset(seen,0,sizeof seen);
+        if(kuhn(i)) cnt++;
+    }
+}
