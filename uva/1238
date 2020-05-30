@@ -1,0 +1,61 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int num[35],sign[35],n=0;
+
+int offset=3000;
+
+bool vis[32][32][2*3001];
+bool used[2*3002];
+
+void solve(int i,int o,int val)
+{
+    if(vis[i][o][val+offset]) return;
+    vis[i][o][val+offset]=1;
+    if(i==n){
+        used[val+offset]=1;
+        return;
+    }
+
+    int new_value=val+num[i]*(o&1?-1:1);
+    if(sign[i]<0)
+        solve(i+1,o+1,new_value);
+    if(o>0)
+        solve(i+1,o-1,new_value);
+    solve(i+1,o,new_value);
+}
+
+int main()
+{
+    //freopen("out.txt","w",stdout);
+    string str;
+
+    while(getline(cin,str)){
+
+        str=str+" ";
+
+        int x=0,s=1,cnt=0;
+
+        for(int i=0;i<str.size();i++){
+            if(str[i]==' '){
+                num[cnt]=s*x;
+                sign[cnt++]=s;
+                x=0;
+            }else if(str[i]=='+' || str[i]=='-'){
+                s=(str[i]=='+')?1:-1;
+                i++;
+            }else{
+                x=(x*10+(str[i]-'0'));
+            }
+        }
+        n=cnt;
+        memset(used,false,sizeof used);
+        memset(vis,false,sizeof vis);
+        solve(0,0,0);
+        int ans=0;
+        for(int i=0;i<2*3002;i++){
+            ans+=used[i];
+        }
+        cout<<ans<<endl;
+    }
+}
