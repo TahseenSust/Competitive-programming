@@ -1,0 +1,90 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+
+typedef long long ll;
+
+vector<int>prime;
+
+void sieve()
+{
+    prime.push_back(2);
+    bool check[305]={0};
+    for(int i=3;i<=300;i+=2){
+        if(check[i]==false){
+            prime.push_back(i);
+            prime.push_back(i);
+            for(int j=i*i;j<=300;j+=i) check[j]=1;
+        }
+    }
+}
+
+bool cmp(int a,int b)
+{
+    stringstream s1,s2;
+    s1<<a;
+    s2<<b;
+    return s1.str()<s2.str();
+}
+
+
+bool dp[150][1005][16];
+
+int ans[16],cnt,val;
+
+
+
+bool solve(int i,int n,int t)
+{
+    if(i==prime.size()) return 0;
+    if(t==cnt){
+        return (n==val);
+    }
+    if(n>=val) return 0;
+    bool &re=dp[i][n][t];
+    if(re==0){
+        return re;
+    }
+    ans[t]=prime[i];
+    if(solve(i+1,n+prime[i],t+1)){
+        return re=1;
+    }
+    if(solve(i+1,n,t)){
+        return re=1;
+    }
+    return re=0;
+}
+
+
+
+
+int main()
+{
+    //freopen("input.txt","r",stdin);
+    //freopen("out.txt","w",stdout);
+
+    sieve();
+    sort(prime.begin(),prime.end(),cmp);
+    int n,t,tc=1;
+
+
+    while(cin>>n>>t){
+        if(n==0 && t==0) return 0;
+        cnt=t;
+        val=n;
+        printf("CASE %d:\n",tc++);
+        memset(dp,1,sizeof dp);
+
+        if(solve(0,0,0)){
+            cout<<ans[0];
+            for(int i=1;i<t;i++){
+                cout<<'+'<<ans[i];
+            }
+            cout<<endl;
+        }else{
+            cout<<"No Solution.\n";
+        }
+    }
+}
