@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+typedef long long ll;
+struct data{
+    string name,os;
+    int val;
+}northen[1002],southern[1002];
+int l,r;
+pair<int,int>dp[1002][1002];
+pair<int,int> solve(int i,int j)
+{
+    if(i==l || j==r) return {0,0};
+    pair<int,int> &re=dp[i][j],tmp;
+    if(re.first!=-1) return re;
+    re=solve(i+1,j);
+    tmp=solve(i,j+1);
+    if(tmp.first>re.first) re=tmp;
+    else if(tmp.first==re.first && tmp.second<re.second) re=tmp;
+    if(northen[i].os==southern[j].os){
+        tmp=solve(i+1,j+1);
+        tmp.first+=northen[i].val+southern[j].val;
+        tmp.second+=1;
+        if(tmp.first>re.first) re=tmp;
+        else if(tmp.first==re.first && tmp.second<re.second) re=tmp;
+    }
+    return re;
+}
+
+int main()
+{
+    int t;
+    cin>>t;
+    while(t--){
+        cin>>l;
+        for(int i=0;i<l;i++){
+            cin>>northen[i].name>>northen[i].os>>northen[i].val;
+        }
+        cin>>r;
+        for(int i=0;i<r;i++){
+            cin>>southern[i].name>>southern[i].os>>southern[i].val;
+        }
+        memset(dp,-1,sizeof dp);
+        pair<int,int>ans=solve(0,0);
+        cout<<ans.first<<' '<<ans.second<<endl;
+    }
+
+
+}
