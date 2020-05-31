@@ -1,0 +1,123 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+
+typedef long long ll;
+
+bool check(int mask,int pos)
+{
+    return mask&(1<<pos);
+}
+
+int SET(int mask,int pos)
+{
+    return mask|(1<<pos);
+}
+
+int FLIP(int mask,int pos)
+{
+    return mask^(1<<pos);
+}
+
+bool hor_2(int mask,int i,int j)
+{
+    if(j>2) return false;
+    return !check(mask,i*4+j+1);
+}
+
+bool hor_3(int mask,int i,int j)
+{
+    if(j>1) return false;
+    return !check(mask,i*4+j+1) && !check(mask,i*4+j+2) ;
+}
+
+bool ver_2(int mask,int i,int j)
+{
+    if(i>2) return false;
+    return !check(mask,(i+1)*4+j);
+}
+
+bool ver_3(int mask,int i,int j)
+{
+    if(i>1) return false;
+    return !check(mask,(i+1)*4+j) && !check(mask,(i+2)*4+j) ;
+}
+
+int dp[(1<<16)+5];
+
+
+int solve(int mask)
+{
+    if(mask==(1<<16)-1) return 1;
+    int &re=dp[mask];
+    if(re!=-1) return re;
+    re=0;
+    for(int i=0;i<4;i++){
+        for(int j=0;j<4;j++){
+            if(!check(mask,i*4+j)){
+                re|=!solve(SET(mask,i*4+j));
+            }
+        }
+    }
+
+    for(int i=0;i<4;i++){
+        if(!check(mask,i*4) && !check(mask,i*4+1)){
+            re|=!solve(SET(SET(mask,i*4),i*4+1));
+        }
+        if(!check(mask,i*4+3) && !check(mask,i*4+2)){
+            re|=!solve(SET(SET(mask,i*4+3),i*4+2));
+        }
+
+        if(!check(mask,i) && !check(mask,4+i)){
+            re|=!solve(SET(SET(mask,i),4+i));
+        }
+        if(!check(mask,12+i) && !check(mask,8+i)){
+            re|=!solve(SET(SET(mask,12+i),8+i));
+        }
+    }
+
+    for(int i=0;i<4;i++){
+        if(!check(mask,i*4) && !check(mask,i*4+1) && !check(mask,i*4+2)){
+            re|=!solve(SET(SET(SET(mask,i*4),i*4+1),i*4+2));
+        }
+        if(!check(mask,i*4+3) && !check(mask,i*4+2) && !check(mask,i*4+1)){
+            re|=!solve(SET(SET(SET(mask,i*4+3),i*4+2),i*4+1));
+        }
+
+        if(!check(mask,i) && !check(mask,4+i) && !check(mask,8+i)){
+            re|=!solve(SET(SET(SET(mask,i),4+i),8+i));
+        }
+        if(!check(mask,12+i) && !check(mask,8+i) && !check(mask,4+i)){
+            re|=!solve(SET(SET(SET(mask,12+i),8+i),4+i));
+        }
+    }
+    return re;
+}
+
+int main()
+{
+    //freopen("input.txt","r",stdin);
+    memset(dp,-1,sizeof dp);
+    string str;
+    int t;
+    cin>>t;
+    while(t--){
+        int mask=0;
+        for(int i=0;i<4;i++){
+            cin>>str;
+            for(int j=0;j<4;j++){
+                if(str[j]=='X'){
+                    mask=SET(mask,i*4+j);
+                }
+            }
+        }
+
+        if(solve(mask)){
+            cout<<"WINNING\n";
+        }else{
+            cout<<"LOSING\n";
+        }
+    }
+}
