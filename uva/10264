@@ -1,0 +1,40 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+
+int main()
+{
+    int n,val[(1<<15)+5],pot[(1<<15)+5];
+
+    while(cin>>n){
+
+        for(int i=0;i<(1<<n);i++){
+            cin>>val[i];
+        }
+
+        for(int i=0;i<(1<<n);i++){
+            int sum=0;
+            string bin;
+            for(int j=0;j<n;j++){
+                int mask=i;
+                mask=mask^(1<<j);
+                sum+=val[mask];
+                bin+=(((i>>j)&1)+'0');
+            }
+            pot[i]=sum;
+        }
+
+        int ans=0;
+
+        for(int i=0;i<(1<<n);i++){
+            for(int j=0;j<n;j++){
+                int mask=i;
+                mask=mask^(1<<j);
+                ans=max(ans,pot[i]+pot[mask]);
+            }
+        }
+
+        cout<<ans<<endl;
+    }
+
+}
