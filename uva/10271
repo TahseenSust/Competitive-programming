@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+
+typedef long long ll;
+
+int n;
+ll l[5005];
+ll dp[5005][1015];
+ll solve(int i,int k)
+{
+    if(k==0){
+        return 0;
+    }
+    if(i==n){
+        return 1e15;
+    }
+    int baki=n-i;
+    if(baki<k*3) return 1e15;
+    ll &re=dp[i][k];
+    if(re!=-1){
+        return re;
+    }
+    re=1e15;
+    if(i+2<=n)
+        re=min(re,solve(i+2,k-1)+(l[i+1]-l[i])*(l[i+1]-l[i]));
+    re=min(re,solve(i+1,k));
+    return re;
+}
+
+int main()
+{
+    int k,t;
+    cin>>t;
+    while(t--){
+        cin>>k>>n;
+
+        k=k+8;
+
+        for(int i=0;i<n;i++){
+            cin>>l[i];
+        }
+        l[n]=1e9;
+        memset(dp,-1,sizeof dp);
+        cout<<solve(0,k)<<endl;
+    }
+}
+
