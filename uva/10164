@@ -1,0 +1,43 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+
+typedef long long ll;
+
+int n,a[2500],sol[2500];
+
+
+bool solve(int pos,int baki,int sum)
+{
+    if(baki==0){
+        return !(sum%n);
+    }
+    if(pos==0) return false;
+    sol[baki]=a[pos];
+    if(solve(pos-1,baki-1,sum+a[pos])) return true;
+    if(solve(pos-1,baki,sum)) return true;
+    return false;
+}
+
+
+int main()
+{
+    while(cin>>n && n){
+
+        for(int i=1;i<=2*n-1;i++){
+            cin>>a[i];
+        }
+
+        if(solve(2*n-1,n,0)){
+            cout<<"Yes\n";
+            cout<<sol[1];
+            for(int i=2;i<=n;i++)
+                cout<<' '<<sol[i];
+            cout<<endl;
+        }else{
+            cout<<"No"<<endl;
+        }
+    }
+}
