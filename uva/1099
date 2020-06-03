@@ -1,0 +1,71 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+
+typedef long long ll;
+
+int n,s[20];
+
+int sum[(1<<15)+5];
+int dp[102][(1<<15)+5];
+
+bool solve(int w,int mask)
+{
+    if(__builtin_popcount(mask)==1){
+        return 1;
+    }
+    int &re=dp[w][mask];
+    if(re!=-1) return re;
+    int h=sum[mask]/w;
+    int m=mask;
+    re=0;
+    for (int s1=m; s1; s1=(s1-1)&m){
+        int s2=mask^s1;
+        for(int i=1;i<w;i++){
+            if(i*h==sum[s1] && (w-i)*h==sum[s2]){
+                re=re|(solve(i,s1)&solve(w-i,s2));
+            }
+        }
+        for(int i=1;i<h;i++){
+            if(i*w==sum[s1] && (h-i)*w==sum[s2]){
+                re=re|(solve(w,s1)&solve(w,s2));
+            }
+        }
+
+    }
+
+
+    return re;
+}
+
+int main()
+{
+    //freopen("out.txt","w",stdout);
+    int w,h,tc=1;
+    while(cin>>n && n){
+        cin>>w>>h;
+        memset(sum,0,sizeof sum);
+        for(int i=0;i<n;i++){
+            cin>>s[i];
+        }
+        for(int i=1;i<(1<<n);i++){
+            for(int j=0;j<n;j++){
+                if(i&(1<<j)){
+                    sum[i]+=s[j];
+                }
+            }
+        }
+        memset(dp,-1,sizeof dp);
+        printf("Case %d: ",tc++);
+        if(sum[(1<<n)-1]==w*h && solve(w,(1<<n)-1)){
+            cout<<"Yes\n";
+        }else{
+            cout<<"No\n";
+        }
+    }
+
+
+
+}
