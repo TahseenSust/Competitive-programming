@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+
+typedef long long ll;
+
+int n,m,p[1002];
+int dp[102][32][3];
+int l;
+int solve(int baki,int i,int flag)
+{
+    if(i==m){
+        if(baki==0 && flag==1){
+            return 0;
+        }
+        return 10000000;
+    }
+    int &re=dp[baki][i][flag];
+    if(re!=-1){
+        return re;
+    }
+    re=solve(baki,i+1,flag);
+    for(int j=1;baki-j>=0 && p[i]/j>=l;j++){
+        re=min(re,solve(baki-j,i+1,flag|((p[i]/j)==l))+p[i]);
+    }
+    return re;
+}
+
+int main()
+{
+    //freopen("out.txt","w",stdout);
+
+    while(cin>>n>>m && n && m){
+        for(int i=0;i<m;i++){
+            cin>>p[i];
+        }
+        bool flag=1;
+        for(int i=1000;i>=1;i--){
+            l=i;
+            memset(dp,-1,sizeof dp);
+            int re=solve(n,0,0);
+            if(re<300000){
+                cout<<i<<' '<<re<<endl;
+                flag=0;
+                break;
+            }
+        }
+        if(flag){
+            cout<<0<<' '<<0<<endl;
+        }
+    }
+}
