@@ -1,0 +1,97 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int k,n,m;
+
+struct data{
+    int c,id;
+    double v;
+    bool operator <(const data &yoo)const{
+        return yoo.c < c;
+    }
+}info[55];
+
+double dp[25][105][55][5];
+
+double solve(int day,int budget,int last,int cnt)
+{
+    if(budget>m) return -1e15;
+    if(day==k){
+        return dp[day][budget][last][cnt]=0;
+    }
+    double &ret=dp[day][budget][last][cnt];
+    if(ret==ret) return ret;
+    ret=-1e15;
+    for(int i=1;i<=n;i++){
+        if(budget+info[i].c<=m){
+            if(i==last && cnt==1){
+                ret=max(ret,solve(day+1,budget+info[i].c,i,cnt+1)+info[i].v*.5);
+            }else if(i==last && cnt>1){
+                ret=max(ret,solve(day+1,budget+info[i].c,i,2));
+            }else{
+                ret=max(ret,solve(day+1,budget+info[i].c,i,1)+info[i].v);
+            }
+        }
+    }
+    return ret;
+}
+
+
+void path(int day,int budget,int last,int cnt)
+{
+    if(day==k){
+        return;
+    }
+    double ret=-1e15;
+    int indx=-1;
+    for(int i=1;i<=n;i++){
+        if(budget+info[i].c<=m){
+            if(i==last && cnt==1){
+                double tmp=dp[day+1][budget+info[i].c][i][cnt+1];
+                if(tmp==tmp && tmp+info[i].v*.5>ret){
+                    ret=tmp+info[i].v*.5;
+                    indx=i;
+                }
+            }else if(i==last && cnt>1){
+                double tmp=dp[day+1][budget+info[i].c][i][2];
+                if(tmp==tmp && tmp>ret){
+                    ret=tmp;
+                    indx=i;
+                }
+            }else{
+                double tmp=dp[day+1][budget+info[i].c][i][1];
+                if(tmp==tmp && tmp+info[i].v>ret){
+                    ret=tmp+info[i].v;
+                    indx=i;
+                }
+            }
+        }
+    }
+    cout<<info[indx].id<<' ';
+    if(day==k-1) cout<<endl;
+    if(indx==last){
+        path(day+1,budget+info[indx].c,indx,2);
+    }else{
+        path(day+1,budget+info[indx].c,indx,1);
+    }
+}
+
+
+int main()
+{
+    while(cin>>k>>n>>m){
+        if(k==0 && n==0 && m==0) return 0;
+        for(int i=1;i<=n;i++){
+            cin>>info[i].c>>info[i].v;
+            info[i].id=i;
+        }
+        sort(info+1,info+1+n);
+        memset(dp,-1,sizeof dp);
+        double ans=max(0.0,solve(0,0,0,0));
+        cout<<setprecision(1)<<fixed<<ans<<endl;
+        if(ans>0)
+            path(0,0,0,0);
+        else
+            cout<<endl;
+    }
+}
