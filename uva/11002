@@ -1,0 +1,64 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+ll n;
+ll grid[300][300];
+ll dp[65][65][3000*2+5];
+
+ll solve(ll x,ll y,ll sum)
+{
+    if(x==0){
+        return abs(3000-sum);
+    }
+    if(dp[x][y][sum]!=-1){
+        return dp[x][y][sum];
+    }
+    ll re=150000;
+    if(abs(grid[x-1][y-1])<=50){
+        re=min(re,solve(x-1,y-1,sum+grid[x][y]));
+        re=min(re,solve(x-1,y-1,sum-grid[x][y]));
+    }
+    if(abs(grid[x-1][y+1])<=50){
+        re=min(re,solve(x-1,y+1,sum+grid[x][y]));
+        re=min(re,solve(x-1,y+1,sum-grid[x][y]));
+    }
+    dp[x][y][sum]=re;
+    return dp[x][y][sum];
+}
+
+int main()
+{
+    //freopen("input.txt","r",stdin);
+    //freopen("out.txt","w",stdout);
+
+    while(scanf("%lld",&n) && n){
+        memset(grid,1,sizeof grid);
+        memset(dp,-1,sizeof dp);
+        for(int i=0;i<300;i++) grid[0][i]=0;
+        int cnt=1;
+        for(int i=0;i<n;i++){
+            for(int j=0,d=0;j<cnt;j++,d+=2){
+                scanf("%lld",&grid[i+1][n-cnt+1+d]);
+            }
+            cnt++;
+        }
+        cnt-=2;
+        for(int i=n;i<2*n-1;i++){
+            for(int j=0,d=0;j<cnt;j++,d+=2){
+                scanf("%lld",&grid[i+1][n-cnt+1+d]);
+            }
+            cnt--;
+        }
+        printf("%lld\n",solve(2*n-1,n,3000));
+    }
+}
+
+/*
+   2
+  3 1
+ 3 5 7
+6 0 2 2
+ 7 5 8
+  1 8
+   7
+*/
