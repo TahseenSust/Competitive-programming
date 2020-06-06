@@ -1,0 +1,90 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+bool check(int mask,int pos)
+{
+    return mask&(1<<pos);
+}
+
+int SET(int mask,int pos)
+{
+    return mask|(1<<pos);
+}
+
+int FLIP(int mask,int pos)
+{
+    return mask^(1<<pos);
+}
+
+int d1x[]={0,1,1,1,0,-1,-1,-1};
+int d1y[]={1,1,0,-1,-1,-1,0,1};
+
+int d2x[]={0,2,2,2,0,-2,-2,-2};
+int d2y[]={2,2,0,-2,-2,-2,0,2};
+
+
+
+int r,c,n;
+
+int solve(int mask,int x,int y);
+
+int cal(int mask,int i1,int j1,int i2,int j2,int i3,int j3,int x,int y)
+{
+    int p1=i1*4+j1;
+    int p2=i2*4+j2;
+    int p3=i3*4+j3;
+    if(i3<0 || j3<0 || i3>=r || j3>=c) return 0;
+    if(check(mask,p1) && check(mask,p2) && !check(mask,p3)){
+        //cout<<mask<<' '<<i1<<' '<<j1<<' '<<i3<<' '<<j3<<endl;
+        mask=FLIP(mask,p1);
+        mask=FLIP(mask,p2);
+        mask=SET(mask,p3);
+        //cout<<mask<<endl;
+        return solve(mask,x,y);
+    }else{
+        return 0;
+    }
+}
+
+int dp[(1<<16)+5][5][5];
+
+int solve(int mask,int x,int y)
+{
+    if(__builtin_popcount(mask)==1){
+        return 1;
+    }
+    int &re=dp[mask][x][y];
+    if(re!=-1) return re;
+    re=0;
+    for(int i=0;i<r;i++){
+        for(int j=0;j<c;j++){
+            for(int k=0;k<8;k++)
+                re=re+cal(mask,i,j,i+d1x[k],j+d1y[k],i+d2x[k],j+d2y[k],x,y);
+        }
+    }
+    return re;
+}
+
+int main()
+{
+    //freopen("input.txt","r",stdin);
+    //freopen("out.txt","w",stdout);
+    memset(dp,-1,sizeof dp);
+    int x,y,t;
+    cin>>t;
+
+    for(int tc=1;tc<=t;tc++){
+
+        cin>>r>>c>>n;
+
+        int mask=0;
+
+        for(int i=0;i<n;i++){
+            cin>>x>>y;
+            mask=SET(mask,(x-1)*4+(y-1));
+        }
+
+        printf("Case %d: %d\n",tc,solve(mask,r,c));
+    }
+
+}
