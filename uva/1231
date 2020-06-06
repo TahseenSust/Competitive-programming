@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int tree[2005][2005],dp[2005];
+
+int t,h,f;
+
+
+int solve()
+{
+    for(int hi=1;hi<=h;hi++){
+        for(int i=0;i<t;i++){
+            dp[hi]=max(dp[hi],tree[i][hi]);
+        }
+    }
+
+    for(int hi=h;hi>=1;hi--){
+        for(int i=0;i<t;i++){
+            tree[i][hi]+=max(tree[i][hi+1],hi+f<=h?dp[hi+f]:0);
+            dp[hi]=max(dp[hi],tree[i][hi]);
+        }
+    }
+    return dp[1];
+
+}
+
+int main()
+{
+    //freopen("out.txt","w",stdout);
+    int c;
+    while(cin>>c && c){
+        while(c--){
+            cin>>t>>h>>f;
+            memset(tree,0,sizeof tree);
+            for(int i=0;i<t;i++){
+                int a,x;
+                cin>>a;
+                while(a--){
+                    cin>>x;
+                    tree[i][x]++;
+                }
+            }
+            int ans=0;
+            memset(dp,-1,sizeof dp);
+            ans=solve();
+            cout<<ans<<endl;
+        }
+    }
+}
