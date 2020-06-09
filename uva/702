@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+typedef unsigned long long ll;
+
+ll dp[55][55];
+bool vis[55][55];
+
+ll f(int a,int b);
+
+ll g(int a,int b)
+{
+    if(a==0 && b==0) return 1;
+    if(vis[a][b]==1) return dp[a][b];
+    vis[a][b]=1;
+    ll re=0;
+    for(int i=1;i<=b;i++){
+        re=re+f(a+i-1,b-i);
+    }
+    return dp[a][b]=re;
+}
+
+ll f(int a,int b)
+{
+    if(a==0 && b==0) return 1;
+    if(vis[a][b]==1) return dp[a][b];
+    vis[a][b]=1;
+    ll re=0;
+    for(int i=1;i<=a;i++){
+        re=re+g(i-1,b+a-i);
+    }
+    return dp[a][b]=re;
+}
+
+
+int main()
+{
+    //freopen("out.txt","w",stdout);
+    memset(vis,false,sizeof vis);
+    ll n,m;
+    int t;
+    cin>>t;
+    for(int tc=1;tc<=t;tc++){
+        cin>>n>>m;
+        cout<<"Case "<<tc<<": ";
+        //memset(vis,false,sizeof vis);
+        if(m==1){
+            if(n<=2) cout<<1<<endl;
+            else cout<<f(1,n-3)<<endl;
+        }else
+            cout<<f(m-1,n-m)<<endl;
+    }
+
+}
