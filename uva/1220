@@ -1,0 +1,82 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+
+typedef long long ll;
+typedef pair<int,int> pii;
+/*
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/detail/standard_policies.hpp>
+using namespace __gnu_pbds;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ost; // set
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset; // multiset
+*/
+
+vector<int>G[205];
+
+int dp[205][3];
+int f[205][3];
+
+
+int solve(int u,int flag)
+{
+    dp[u][flag]=flag;
+    f[u][flag]=1;
+
+    if(flag){
+        for(auto v:G[u]){
+            dp[u][flag]+=solve(v,0);
+            if(f[v][0]==false) f[u][1]=false;
+        }
+    }else{
+        for(auto v:G[u]){
+            dp[u][flag]+=max(solve(v,0),solve(v,1));
+            if(dp[v][0]==dp[v][1]) f[u][0]=false;
+            else if(dp[v][0]>dp[v][1] && f[v][0]==false) f[u][0]=false;
+            else if(dp[v][0]<dp[v][1] && f[v][1]==false) f[u][0]=false;
+        }
+    }
+    return dp[u][flag];
+}
+
+int main()
+{
+    //freopen("out.txt","w",stdout);
+    int n;
+    while(cin>>n && n){
+        map<string,int>id;
+
+        int k=0;
+
+        string s1,s2;
+
+        cin>>s1;
+
+        id[s1]=k++;
+
+        for(int i=1;i<n;i++){
+            cin>>s1>>s2;
+            if(id.find(s1)==id.end()) id[s1]=k++;
+            if(id.find(s2)==id.end()) id[s2]=k++;
+            int u=id[s1];
+            int v=id[s2];
+            G[v].push_back(u);
+        }
+
+        memset(dp,0,sizeof dp);
+        memset(f,0,sizeof f);
+
+        cout<<max(solve(0,0),solve(0,1))<<' ';
+
+        if((dp[0][0]>dp[0][1] && f[0][0]) || (dp[0][0]<dp[0][1] && f[0][1])) cout<<"Yes\n";
+        else cout<<"No\n";
+
+
+        for(int i=0;i<n;i++){
+            G[i].clear();
+        }
+    }
+}
