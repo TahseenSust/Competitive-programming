@@ -1,0 +1,28 @@
+import java.io.*;
+import java.util.*;
+import java.math.*;
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BigInteger lucky[][];  
+        lucky = new BigInteger[130][130];
+
+        
+        for(int n=0;n<=100;n++){
+            for(int b=4;b<=128;b++){
+                if(n==0) lucky[b][n]=BigInteger.valueOf(1);
+                else if(n==1) lucky[b][n]=BigInteger.valueOf(b-1);
+                else lucky[b][n]=lucky[b][n-1].multiply(BigInteger.valueOf(b)).subtract(lucky[b][n-2]);
+            }
+        }
+        int b,n;
+        Scanner input=new Scanner(System.in);
+        while(true){
+            b=input.nextInt();
+            n=input.nextInt();
+            if(b==0 && n==0) break;
+            System.out.println(lucky[b][n]);
+        }
+    }
+    
+
+}
