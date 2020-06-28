@@ -1,0 +1,74 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+
+typedef long long ll;
+typedef pair<int,int> pii;
+/*
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/detail/standard_policies.hpp>
+using namespace __gnu_pbds;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ost; // set
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset; // multiset
+*/
+
+// Bitmask
+
+ll const mod=1000000007;
+
+
+
+bool check(int mask,int pos){return mask&(1<<pos);}
+int SET(int mask,int pos){return mask|(1<<pos);}
+int FLIP(int mask,int pos){return mask^(1<<pos);}
+
+int n,m;
+
+ll dp[105][(1<<10)+5][12][3];
+
+ll solve(int pos,int mask,int last,int first)
+{
+    if(pos==m){
+        //cout<<mask<<endl;
+        return (mask==((1<<n)-1))%mod;
+    }
+
+    ll &re=dp[pos][mask][last][first];
+
+    if(re!=-1) return re;
+
+    re=0;
+
+    if(first){
+        re=solve(pos+1,0,0,1)%mod;
+    }
+
+    for(int i=0;i<n;i++){
+        //cout<<pos<<' '<<first<<' '<<i<<' '<<last<<endl;
+        if(first==1 && i!=0){
+            re=(re+solve(pos+1,SET(mask,i),i,0)%mod)%mod;
+        }else if(first==0 && abs(last-i)==1){
+            re=(re+solve(pos+1,SET(mask,i),i,0)%mod)%mod;
+        }
+    }
+    return re%mod;
+
+}
+
+
+int main()
+{
+    FAST
+    int t;
+    cin>>t;
+    while(t--){
+        cin>>n>>m;
+        //cout<<(1<<n)-1<<endl;
+        memset(dp,-1,sizeof dp);
+        cout<<solve(0,0,0,1)<<endl;
+    }
+
+}
