@@ -1,0 +1,107 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+
+typedef long long ll;
+typedef pair<int,int> pii;
+/*
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/detail/standard_policies.hpp>
+using namespace __gnu_pbds;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ost; // set
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset; // multiset
+*/
+
+// Bitmask
+
+/*
+bool check(int mask,int pos){return mask&(1<<pos);}
+int SET(int mask,int pos){return mask|(1<<pos);}
+int FLIP(int mask,int pos){return mask^(1<<pos);}
+*/
+
+int sum=0,n;
+ll dp[8][8][8][8][4][4][4][4];
+
+ll solve(int m1,int m2,int m3,int m4,int first,int first_sz,int last,int last_sz)
+{
+    if(m1==0 && m2==0 && m3==0 && m4==0){
+        return (first!=last && first_sz!=last_sz);
+    }
+
+    ll &re=dp[m1][m2][m3][m4][first][first_sz][last][last_sz];
+
+    if(re!=-1){
+        return re;
+    }
+
+    re=0;
+
+    if(m1+m2+m3+m4==sum){
+        for(int i=1;i<=min(3,m1);i++) re=re+solve(m1-i,m2,m3,m4,0,i,0,i);
+        for(int i=1;i<=min(3,m2);i++) re=re+solve(m1,m2-i,m3,m4,1,i,1,i);
+        for(int i=1;i<=min(3,m3);i++) re=re+solve(m1,m2,m3-i,m4,2,i,2,i);
+        for(int i=1;i<=min(3,m4);i++) re=re+solve(m1,m2,m3,m4-i,3,i,3,i);
+    }else{
+        if(last!=0){
+            for(int i=1;i<=min(3,m1);i++){
+                if(i!=last_sz)
+                    re=re+solve(m1-i,m2,m3,m4,first,first_sz,0,i);
+            }
+        }
+        if(last!=1){
+            for(int i=1;i<=min(3,m2);i++){
+                if(i!=last_sz)
+                    re=re+solve(m1,m2-i,m3,m4,first,first_sz,1,i);
+            }
+        }
+        if(last!=2){
+            for(int i=1;i<=min(3,m3);i++){
+                if(i!=last_sz)
+                    re=re+solve(m1,m2,m3-i,m4,first,first_sz,2,i);
+            }
+        }
+        if(last!=3){
+            for(int i=1;i<=min(3,m4);i++){
+                if(i!=last_sz)
+                    re=re+solve(m1,m2,m3,m4-i,first,first_sz,3,i);
+            }
+        }
+    }
+    return re;
+
+}
+
+int main()
+{
+    //freopen("out.txt","w",stdout);
+    memset(dp,-1,sizeof dp);
+    FAST
+    int t=1,a[5];
+    cin>>t;
+    while(t--){
+        cin>>n;
+        memset(a,0,sizeof a);
+        int cnt=0;
+        for(int i=0;i<n;i++){
+            cin>>a[i];
+            cnt+=(a[i]>0);
+        }
+        sum=a[0]+a[1]+a[2]+a[3];
+        ll ans=0;
+        if(cnt==0) ans=1;
+        else if(cnt==1){
+            for(int i=0;i<n;i++){
+                if(a[i]>0 && a[i]<=3){
+                    ans=1;
+                    break;
+                }
+            }
+        }
+        else ans=solve(a[0],a[1],a[2],a[3],0,0,1,1);
+        cout<<ans<<endl;
+    }
+}
