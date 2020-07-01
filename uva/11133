@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+
+typedef long long ll;
+typedef pair<int,int> pii;
+/*
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/detail/standard_policies.hpp>
+using namespace __gnu_pbds;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ost; // set
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset; // multiset
+*/
+
+// Bitmask
+
+/*
+bool check(int mask,int pos){return mask&(1<<pos);}
+int SET(int mask,int pos){return mask|(1<<pos);}
+int FLIP(int mask,int pos){return mask^(1<<pos);}
+*/
+
+int a1,an;
+int dp[50];
+int solve(int last)
+{
+    if(last==an) return 1;
+    int &re=dp[last];
+    if(re!=-1) return re;
+    re=0;
+    for(int i=last+1;i<=an;i++){
+        int d=i-last;
+        if(i%d==0){
+            re=re+solve(i);
+        }
+    }
+    return re;
+}
+
+int main()
+{
+    while(cin>>a1>>an){
+        if(a1>=an) return 0;
+        memset(dp,-1,sizeof dp);
+        cout<<a1<<' '<<an<<' '<<solve(a1)<<endl;
+    }
+}
