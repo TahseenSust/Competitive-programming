@@ -1,0 +1,70 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+
+typedef long long ll;
+typedef pair<int,int> pii;
+/*
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/detail/standard_policies.hpp>
+using namespace __gnu_pbds;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ost; // set
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset; // multiset
+*/
+
+// Bitmask
+
+/*
+bool check(int mask,int pos){return mask&(1<<pos);}
+int SET(int mask,int pos){return mask|(1<<pos);}
+int FLIP(int mask,int pos){return mask^(1<<pos);}
+*/
+
+double a[100005];
+int m;
+int check(double range)
+{
+    int cnt=1;
+    double covered=a[0]+range*2;
+    for(int i=0;i<m;i++){
+        if(a[i]>covered){
+            covered=a[i]+range*2;
+            cnt++;
+        }
+    }
+    return cnt;
+}
+
+int main()
+{
+    FAST
+    //freopen("out.txt","w",stdout);
+    int t,n;
+
+    cin>>t;
+    while(t--){
+        cin>>n>>m;
+        for(int i=0;i<m;i++){
+            cin>>a[i];
+        }
+        sort(a,a+m);
+        a[m]=1e9;
+
+        double lo=0,hi=a[m-1],mid;
+
+        while(hi-lo>0.00001){
+            mid=(lo+hi)/2;
+            int cnt=check(mid);
+            if(cnt>n){
+                lo=mid;
+            }else{
+                hi=mid;
+            }
+        }
+        //cout<<hi<<endl;
+        cout<<setprecision(1)<<fixed<<round(hi*10)/10.0<<endl;
+    }
+}
