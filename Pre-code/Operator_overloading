@@ -9,3 +9,12 @@ struct data{
     return yoo.w < w;
   }
 };
+
+struct data{
+    int u,v;
+    ll w;
+    data(int u,int v,ll w):u(u),v(v),w(w){}
+    bool friend operator <(data A,data B){
+        return A.w<B.w;
+    }
+};
