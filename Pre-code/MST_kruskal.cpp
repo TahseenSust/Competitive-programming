@@ -15,7 +15,7 @@ bool vis[110];
  
 int find_root(int u)
 {
-    return (par[u]==u)?u:find_root(par[u]);
+    return (par[u]==u)?u:(par[u]=find_root(par[u]));
 }
  
 void dfs(int s,vector<int>G[])
