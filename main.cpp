@@ -15,6 +15,10 @@ typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_
 typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset; // multiset
 */
 
+// direction array
+int dx[]={1,-1,0,0};
+int dy[]={0,0,1,-1};
+
 // Bitmask
 
 /*
