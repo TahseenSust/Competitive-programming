@@ -1,0 +1,166 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<int,int> pii;
+typedef vector<pii> vpii;
+///number of states or nodes in a suffix automaton is equal to the
+/// number of equivalence classes i.e. endpos-equivalent classes among all substrings
+struct node
+{
+    int len; ///largest string length of the corresponding endpos-equivalent class
+    int link; ///leads to the state that corresponds to the longest suffix of w
+///that is another endpos-equivalent class.
+    int firstpos; ///1-indexed end position of the first occurrence of the largest string length of the
+///corresponding endpos-equivalent class
+    map<char,int>nxt;
+};
+///all suffix links of the last node are terminal nodes including the last node
+///minlen(v)=smallest string length of the corresponding endpos-equivalent class=len(link(v))+1
+///every node represents len-minlen+1 strings
+#define mxn 250000
+#define F first
+#define S second
+#define MP make_pair
+const int MX=mxn*2;
+
+node t[MX];
+int sz,last;
+void init()
+{
+    sz=last=0;
+    t[0].len=0;
+    t[0].firstpos=0;
+    t[0].link=-1;
+    sz++;
+}
+ll cnt[MX];///number of times i-th node occurs in the string
+vpii v;
+set<pii>nodes;
+void add_letter(char ch)
+{
+    int cur=sz++;
+    t[cur].len=t[last].len+1;
+    t[cur].firstpos=t[cur].len;
+    cnt[cur]=1;
+    nodes.insert({t[cur].len,cur});
+    int p;
+    for(p=last; p!=-1&&!t[p].nxt.count(ch); p=t[p].link)
+        t[p].nxt[ch]=cur;
+    if(p==-1)
+        t[cur].link=0;
+    else
+    {
+        int q=t[p].nxt[ch];
+        if(t[p].len+1==t[q].len)
+            t[cur].link=q;
+        else
+        {
+            int clone=sz++;
+            t[clone].len=t[p].len+1;
+            t[clone].nxt=t[q].nxt;
+            t[clone].link=t[q].link;
+            t[clone].firstpos=t[q].firstpos;
+            cnt[clone]=0;
+            nodes.insert({t[clone].len,clone});
+            for(; p!=-1&&t[p].nxt[ch]==q; p=t[p].link)
+                t[p].nxt[ch]=clone;
+            t[q].link=t[cur].link=clone;
+        }
+    }
+    last=cur;
+}
+ll dcnt[MX]; ///number of distinct substrings in the subtree of node i
+ll dist_sub(int u) ///number of distinct substrings of the string
+{
+    ll ans=1;
+    if(dcnt[u])
+        return dcnt[u];
+    for(auto x:t[u].nxt)
+    {
+        char ch=x.F;
+        ans+=1LL*dist_sub(t[u].nxt[ch]);
+    }
+    return dcnt[u]=ans;
+}
+///returns the lexicographically k-th substring pos in 1-indexed
+///O(n)
+pii kth_Path(int k)
+{
+    int len = 0;
+    int cur = 0;
+    int pos = -1;
+    for(; k; --k)
+    {
+        int s = 0, p = cur;
+        for(auto it:t[cur].nxt)
+        {
+            if(dcnt[it.S] + s < k)
+                s += dcnt[it.S];
+            else
+            {
+                len ++, cur = it.second, pos = t[it.second].firstpos;
+                break;
+            }
+        }
+        if(cur == p)
+            break;
+        k -= s;
+    }
+    if(k == 0)
+        return MP(pos - len + 1,pos);
+    else
+        return MP(-1, -1);
+}
+int lcs(string s)
+{
+    int cur=0,ans=0,len=0,pos=0;
+    for(int i=0; i<s.size(); i++)
+    {
+        while(cur&&!t[cur].nxt.count(s[i]))
+        {
+            cur=t[cur].link;
+            len=t[cur].len;
+        }
+        if(t[cur].nxt.count(s[i]))
+        {
+            cur=t[cur].nxt[s[i]];
+            len++;
+        }
+        if(len>ans)
+            ans=len,pos=i;
+    }
+    string sub=s.substr(pos-ans+1,ans);
+    return ans;
+}
+int main()
+{
+    int i,j,n,m,k,q;
+    string s;
+    cin>>s;
+    n=s.size();
+    init();
+    for(i=0; i<n; i++)
+        add_letter(s[i]);
+    for(auto it=nodes.rbegin(); it!=nodes.rend(); ++it)
+        cnt[t[(*it).S].link]+=cnt[(*it).S];
+    dist_sub(0);
+    cout<<dcnt[0]-1<<endl;
+    k=2;
+    pii pos=kth_Path(k);
+    if(pos.F==-1)
+        cout<<"no such string\n";
+    else
+        cout<<s.substr(pos.F-1,pos.S-pos.F+1)<<endl;
+    cout<<lcs("abc")<<endl;
+    for(i=1; i<sz; i++)
+        cout<<t[i].firstpos<<' '<<t[i].len<<' '<<cnt[i]<<endl;
+    ///longest repeated substring
+    ///for bababa ans is 4(baba)
+    int ans=0;
+    for(i=1; i<sz; i++)
+        if(cnt[i]>1)
+            ans=max(ans,t[i].len);
+    cout<<ans<<endl;
+    return 0;
+}
+
