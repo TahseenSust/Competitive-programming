@@ -25,17 +25,27 @@ const int MX=mxn*2;
 
 node t[MX];
 int sz,last;
+ll cnt[MX];///number of times i-th node occurs in the string
+vpii v;
+set<pii>nodes;
+void CLR()
+{
+    for(int i=0;i<sz;i++){
+        t[i].nxt.clear();
+        cnt[i]=0;
+    }
+    v.clear();
+    nodes.clear();
+}
 void init()
 {
+    CLR();
     sz=last=0;
     t[0].len=0;
     t[0].firstpos=0;
     t[0].link=-1;
     sz++;
 }
-ll cnt[MX];///number of times i-th node occurs in the string
-vpii v;
-set<pii>nodes;
 void add_letter(char ch)
 {
     int cur=sz++;
