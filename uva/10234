@@ -1,0 +1,144 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<int,int> pii;
+typedef vector<pii> vpii;
+///number of states or nodes in a suffix automaton is equal to the
+/// number of equivalence classes i.e. endpos-equivalent classes among all substrings
+struct node
+{
+    int len; ///largest string length of the corresponding endpos-equivalent class
+    int link; ///leads to the state that corresponds to the longest suffix of w
+///that is another endpos-equivalent class.
+    int firstpos; ///1-indexed end position of the first occurrence of the largest string length of the
+///corresponding endpos-equivalent class
+    map<char,int>nxt;
+};
+///all suffix links of the last node are terminal nodes including the last node
+///minlen(v)=smallest string length of the corresponding endpos-equivalent class=len(link(v))+1
+///every node represents len-minlen+1 strings
+#define mxn 1005
+#define F first
+#define S second
+#define MP make_pair
+const int MX=mxn*2;
+
+node t[MX];
+int sz,last;
+ll cnt[MX];///number of times i-th node occurs in the string
+vpii v;
+set<pii>nodes;
+void CLR()
+{
+    for(int i=0;i<sz;i++){
+        t[i].nxt.clear();
+        cnt[i]=0;
+    }
+    v.clear();
+    nodes.clear();
+}
+void init()
+{
+    CLR();
+    sz=last=0;
+    t[0].len=0;
+    t[0].firstpos=0;
+    t[0].link=-1;
+    sz++;
+}
+void add_letter(char ch)
+{
+    int cur=sz++;
+    t[cur].len=t[last].len+1;
+    t[cur].firstpos=t[cur].len;
+    cnt[cur]=1;
+    nodes.insert({t[cur].len,cur});
+    int p;
+    for(p=last; p!=-1&&!t[p].nxt.count(ch); p=t[p].link)
+        t[p].nxt[ch]=cur;
+    if(p==-1)
+        t[cur].link=0;
+    else
+    {
+        int q=t[p].nxt[ch];
+        if(t[p].len+1==t[q].len)
+            t[cur].link=q;
+        else
+        {
+            int clone=sz++;
+            t[clone].len=t[p].len+1;
+            t[clone].nxt=t[q].nxt;
+            t[clone].link=t[q].link;
+            t[clone].firstpos=t[q].firstpos;
+            cnt[clone]=0;
+            nodes.insert({t[clone].len,clone});
+            for(; p!=-1&&t[p].nxt[ch]==q; p=t[p].link)
+                t[p].nxt[ch]=clone;
+            t[q].link=t[cur].link=clone;
+        }
+    }
+    last=cur;
+}
+
+pair<int,string> mx_len[mxn];
+bool vis[MX];
+
+void dfs(int u,string suf=""){
+//    if(suf.size()!=t[u].len){
+//        return;
+//    }
+    if(u){
+
+        int len=suf.size();
+        //cout<<"->"<<len<<' '<<tmp<<'-'<<suf<<' '<<ct<<endl;
+        if(cnt[u]>cnt[mx_len[len].first]){
+            mx_len[len].first=u;
+            mx_len[len].second=suf;
+        }else if(cnt[u]==cnt[mx_len[len].first]){
+            if(mx_len[len].second>suf){
+                mx_len[len].first=u;
+                mx_len[len].second=suf;
+            }
+        }
+
+    }
+    //cout<<suf<<endl;
+    //vis[u]=1;
+    for(auto v:t[u].nxt){
+        if(vis[v.second]==false)
+            dfs(v.second,suf+v.first);
+    }
+}
+
+int k;
+
+int main()
+{
+    //freopen("input.txt","r",stdin);
+    //freopen("output.txt","w",stdout);
+
+    int i,j,n,m,q;
+    string s;
+    while(getline(cin,s)){
+        n=s.size();
+        init();
+        for(i=0; i<n; i++){
+            s[i]=tolower(s[i]);
+            add_letter(s[i]);
+        }
+        for(auto it=nodes.rbegin(); it!=nodes.rend(); ++it)
+            cnt[t[(*it).S].link]+=cnt[(*it).S];
+        cnt[0]=0;
+        memset(mx_len,0,sizeof mx_len);
+        dfs(0);
+
+        cin>>q;
+        while(q--){
+            cin>>k;
+            cout<<cnt[mx_len[k].first]<<' '<<mx_len[k].second<<endl;
+        }
+        CLR();
+        cin.get();
+    }
+    return 0;
+}
