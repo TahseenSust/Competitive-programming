@@ -1,0 +1,60 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+
+typedef long long ll;
+typedef pair<int,int> pii;
+/*
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/detail/standard_policies.hpp>
+using namespace __gnu_pbds;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ost; // set
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset; // multiset
+*/
+
+// direction array
+int dx[]={1,-1,0,0};
+int dy[]={0,0,1,-1};
+
+// Bitmask
+
+/*
+bool check(int mask,int pos){return mask&(1<<pos);}
+int SET(int mask,int pos){return mask|(1<<pos);}
+int FLIP(int mask,int pos){return mask^(1<<pos);}
+*/
+
+int dp[3][102][102]={0};
+
+int main()
+{
+    //freopen("input.txt","r",stdin);
+    //freopen("output.txt","w",stdout);
+    int n,m,t,a,ans=0,tc;
+    cin>>tc;
+    while(tc--){
+        cin>>n>>t>>m;
+        memset(dp,0,sizeof dp);
+        ans=0;
+        int pos=0;
+        for(int i=1;i<=n;i++){
+            cin>>a;
+            cin.ignore();
+            for(int j=1;j<=m;j++){
+                for(int k=0;k<=t;k++){
+                    dp[pos][j][k]=max(dp[pos^1][j][k],max(dp[pos^1][j-1][t],dp[pos][j-1][t]));
+                    if(k>=a){
+                        dp[pos][j][k]=max(dp[pos][j][k],dp[pos^1][j][k-a]+1);
+                    }
+                    ans=max(ans,dp[pos][j][k]);
+                }
+            }
+            pos=pos^1;
+        }
+        cout<<ans<<endl;
+        if(tc) cout<<endl;
+    }
+}
