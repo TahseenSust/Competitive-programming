@@ -1,0 +1,81 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+
+typedef long long ll;
+typedef pair<int,int> pii;
+/*
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/detail/standard_policies.hpp>
+using namespace __gnu_pbds;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ost; // set
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset; // multiset
+*/
+
+// direction array
+int dx[]={1,-1,0,0};
+int dy[]={0,0,1,-1};
+
+// Bitmask
+
+/*
+bool check(int mask,int pos){return mask&(1<<pos);}
+int SET(int mask,int pos){return mask|(1<<pos);}
+int FLIP(int mask,int pos){return mask^(1<<pos);}
+*/
+
+vector<int>num;
+ll dp[40][3][3][40];
+
+ll dp_func(int pos,int first,int small,int one)
+{
+    if(pos<0){
+        return one;
+    }
+    ll &res=dp[pos][first][small][one];
+    if(res!=-1 && small){
+        return res;
+    }
+    res=0;
+    int en=(small?1:num[pos]);
+    if(first){
+        res=dp_func(pos-1,1,1,0);
+    }
+
+    for(int i=first;i<en;i++){
+        res=res+dp_func(pos-1,0,1,one+(i==1));
+    }
+    res=res+dp_func(pos-1,0,small,one+(en==1));
+
+    return res;
+}
+
+
+ll solve(int x)
+{
+    if(x<0) return 0;
+    num.clear();
+    while(x){
+        num.push_back(x%2);
+        x/=2;
+    }
+    return dp_func(num.size()-1,1,0,0);
+}
+
+int main()
+{
+    //freopen("input.txt","r",stdin);
+    //freopen("output.txt","w",stdout);
+    memset(dp,-1,sizeof dp);
+    int l,r,tc=1;
+    while(cin>>l>>r){
+        if(l==0 && r==0){
+            return 0;
+        }
+        printf("Case %d: ",tc++);
+        cout<<solve(r)-solve(l-1)<<endl;;
+    }
+}
