@@ -1,0 +1,72 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+
+typedef long long ll;
+typedef pair<int,int> pii;
+/*
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/detail/standard_policies.hpp>
+using namespace __gnu_pbds;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ost; // set
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset; // multiset
+*/
+
+// direction array
+int dx[]={1,-1,0,0};
+int dy[]={0,0,1,-1};
+
+// Bitmask
+
+/*
+bool check(int mask,int pos){return mask&(1<<pos);}
+int SET(int mask,int pos){return mask|(1<<pos);}
+int FLIP(int mask,int pos){return mask^(1<<pos);}
+*/
+
+int n,k;
+ll pow2[70];
+ll dp[35][35][102];
+
+ll solve(int one,int zero,int rem)
+{
+    if(one==0 && zero==0){
+        return rem==0;
+    }
+
+    ll &ret=dp[one][zero][rem];
+    if(ret!=-1) return ret;
+    ret=0;
+
+    if(one+zero!=n && zero){
+        ret=ret+solve(one,zero-1,rem);
+    }
+    if(one)
+        ret=ret+solve(one-1,zero,(rem+pow2[one+zero-1])%k);
+    return ret;
+}
+
+int main()
+{
+    int t;
+
+    cin>>t;
+
+    for(int tc=1;tc<=t;tc++){
+        cin>>n>>k;
+        printf("Case %d: ",tc);
+        if(n&1 || k==0){
+            cout<<0<<endl;
+            continue;
+        }
+        pow2[0]=1ll;
+        for(int i=1;i<=64;i++){
+            pow2[i]=(pow2[i-1]*2ll)%k;
+        }
+        memset(dp,-1,sizeof dp);
+        cout<<solve(n/2,n/2,0)<<endl;
+    }
+}
