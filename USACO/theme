@@ -1,0 +1,46 @@
+/*
+ID: tahseen1
+TASK: theme
+LANG: C++14
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<int,int> pii;
+const ll INF=(1<<28);
+int dx[]= {1,-1,0,0};
+int dy[]= {0,0,1,-1};
+const int sz=35;
+const int N=5005;
+
+
+int main()
+{
+    freopen("theme.in","r",stdin);
+    freopen("theme.out","w",stdout);
+    int n,m,arr[N],ans=0;
+
+    scanf("%d",&n);
+    for(int i=1;i<=n;i++){
+        scanf("%d",&arr[i]);
+    }
+
+    for(int i=1;i<=n-max(5,ans);i++){
+        for(int j=i+max(5,ans);j<=n-max(5,ans);j++){
+            int b=i,c=j,d=arr[i]-arr[j];
+            while(b+1<j && c+1<=n && arr[b+1]-arr[c+1]==d){
+                b++;
+                c++;
+            }
+            if(b-i+1>=5)
+                ans=max(ans,b-i+1);
+        }
+    }
+
+    printf("%d\n",ans);
+
+
+}
+
+
