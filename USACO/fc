@@ -1,0 +1,158 @@
+/*
+ID: tahseen1
+TASK: fc
+LANG: C++14
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll INF=(1<<28);
+int dx[]={1,-1,0,0};
+int dy[]={0,0,1,-1};
+const int sz=35;
+#define mx 300005
+struct point
+{
+    double x,y;
+} base;
+
+vector<point> points;
+
+int Size;
+
+bool operator == (point a, point b)
+{
+    return a.x==b.x and a.y==b.y;
+}
+
+int area( point p, point q, point r )
+{
+    double x[]= {p.x, q.x, r.x};
+    double y[]= {p.y, q.y, r.y};
+
+    ll a= 0;
+    int j= 2;
+
+    for(int i=0; i<3; i++)
+    {
+        a+=(x[j]+x[i])*(y[j]-y[i]);
+        j= i;
+    }
+
+    if(a>0)
+        return 1;
+    if(a<0)
+        return 2;
+    return 0;
+}
+
+double dist( point a, point b )
+{
+    return (a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y);
+}
+
+bool cmp( const point&a, const point&b )
+{
+    double pos= area( base, a, b );
+
+    if(pos==0)
+    {
+        double d1= dist( base, a );
+        double d2= dist( base, b );
+
+        return d1>d2;
+    }
+
+    return pos==2;
+}
+
+bool cmp2( const point&a, const point&b  )
+{
+    double d1= dist( base, a );
+    double d2= dist( base, b );
+
+    return d1<d2;
+}
+
+vector<point> Hull( int n )
+{
+    vector<point> ans(mx);
+
+    int l=0;
+
+    for(int i=1; i<n; i++)
+        if( points[i].x<points[l].x or( points[i].x==points[l].x and points[i].y<points[l].y ))
+            l= i;
+    base= points[l];
+
+    sort( points.begin(), points.begin()+n, cmp );
+
+    int cnt= 1;
+
+    for(int i=0; i<n-1; i++)
+    {
+        if( area( base, points[i], points[i+1] )!=0 )
+            break;
+        cnt++;
+    }
+
+    sort( points.begin(), points.begin()+cnt, cmp2 );
+
+    points.erase( unique(points.begin(), points.end()), points.end() );
+    n= points.size();
+
+    if(n<3)
+    {
+        for(int i=0; i<n; i++)
+            ans[i]=points[i];
+        Size= n;
+        return ans;
+    }
+
+    ans[0]= base;
+    for(int i=1; i<3; i++)
+        ans[i]=points[i-1];
+
+    int j=3;
+    for( int i=2; i<n-1; i++ )
+    {
+        while( area( ans[j-2], ans[j-1], points[i] )!=2 )
+            j--;
+        ans[j++]= points[i];
+        //cout<<j<<endl;
+    }
+
+    Size= j;
+
+    return ans;
+
+}
+
+int main()
+{
+
+    freopen("fc.in","r",stdin);
+    freopen("fc.out","w",stdout);
+
+
+    int n;
+    cin>>n;
+    for(int i=0;i<n;i++){
+        double x,y;
+        cin>>x>>y;
+        points.push_back({x,y});
+    }
+
+    vector<point>cor=Hull(n);
+
+    double ans=0;
+
+    cor[Size]=cor[0];
+
+    for(int i=0;i<Size;i++){
+        ans=ans+sqrt(dist(cor[i],cor[i+1]));
+    }
+    cout<<setprecision(2)<<fixed<<ans<<endl;
+
+
+}
