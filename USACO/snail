@@ -1,0 +1,116 @@
+/*
+ID: tahseen1
+TASK: snail
+LANG: C++14
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll INF=(1<<28);
+int dx[]={1,-1,0,0};
+int dy[]={0,0,1,-1};
+const int sz=35;
+
+int n,m,ans;
+int vis[125][125];
+
+
+void dfs(int x,int y,int cnt,int flag)
+{
+    if(ans<cnt){
+        ans=cnt;
+    }
+    if(flag==1){
+        return;
+    }
+    int i=0,d=cnt,j;
+    if(vis[x][y+1]==0){
+        for(i=y+1;vis[x][i]==0;i++){
+            vis[x][i]=1;
+            d++;
+        }
+        dfs(x,i-1,d,vis[x][i]);
+        j=i-1;
+        for(i=y+1;i<=j;i++){
+            vis[x][i]=0;
+        }
+    }
+
+    if(vis[x][y-1]==0){
+        d=cnt;
+        for(i=y-1;vis[x][i]==0;i--){
+            vis[x][i]=1;
+            d++;
+        }
+        dfs(x,i+1,d,vis[x][i]);
+        j=i+1;
+        for(i=y-1;i>=j;i--){
+            vis[x][i]=0;
+        }
+    }
+
+    if(vis[x+1][y]==0){
+        d=cnt;
+        for(i=x+1;vis[i][y]==0;i++){
+            vis[i][y]=1;
+            d++;
+        }
+        dfs(i-1,y,d,vis[i][y]);
+        j=i-1;
+        for(i=x+1;i<=j;i++){
+            vis[i][y]=0;
+        }
+    }
+    if(vis[x-1][y]==0){
+        d=cnt;
+        for(i=x-1;vis[i][y]==0;i--){
+            vis[i][y]=1;
+            d++;
+        }
+        dfs(i+1,y,d,vis[i][y]);
+        j=i+1;
+        for(i=x-1;i>=j;i--){
+            vis[i][y]=0;
+        }
+    }
+
+}
+
+
+int main()
+{
+
+    freopen("snail.in","r",stdin);
+    freopen("snail.out","w",stdout);
+
+    cin>>n>>m;
+
+    for(int i=0;i<m;i++){
+        string str;
+        cin>>str;
+        int x=0;
+        for(int i=1;i<str.size();i++){
+            x=x*10+(str[i]-'0');
+        }
+
+        vis[str[0]-'A'+1][x]=-1;
+    }
+
+    for(int i=0;i<=n+1;i++){
+        vis[0][i]=-1;
+    }
+    for(int i=0;i<=n+1;i++){
+        vis[i][0]=-1;
+    }
+    for(int i=0;i<=n+1;i++){
+        vis[n+1][i]=-1;
+    }
+    for(int i=0;i<=n+1;i++){
+        vis[i][n+1]=-1;
+    }
+    vis[1][1]=1;
+    dfs(1,1,0,0);
+    cout<<ans+1<<endl;
+
+}
