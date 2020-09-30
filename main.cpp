@@ -25,6 +25,8 @@ int dy[]={0,0,1,-1};
 bool check(int mask,int pos){return mask&(1<<pos);}
 int SET(int mask,int pos){return mask|(1<<pos);}
 int FLIP(int mask,int pos){return mask^(1<<pos);}
+int reset(int mask,int pos){return mask&~(1 << pos);}
+
 */
 
 
