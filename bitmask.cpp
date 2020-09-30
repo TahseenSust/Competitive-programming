@@ -21,6 +21,7 @@ int FLIP(int mask,int pos)
     return mask^(1<<pos);
 }
 
+int reset(int mask,int pos){return mask&~(1 << pos);}
 
 
 
