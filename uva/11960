@@ -1,0 +1,90 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+
+typedef long long ll;
+typedef pair<int,int> pii;
+/*
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/detail/standard_policies.hpp>
+using namespace __gnu_pbds;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ost; // set
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset; // multiset
+*/
+
+// direction array
+int dx[]={1,-1,0,0};
+int dy[]={0,0,1,-1};
+
+// Bitmask
+
+/*
+bool check(int mask,int pos){return mask&(1<<pos);}
+int SET(int mask,int pos){return mask|(1<<pos);}
+int FLIP(int mask,int pos){return mask^(1<<pos);}
+int reset(int mask,int pos){return mask&~(1 << pos);}
+*/
+const int sz=1000005;
+
+vector<int>primes;
+int check[sz];
+int NOD[sz];
+int ans[sz];
+
+void seive()
+{
+    primes.push_back(2);
+    memset(check,-1,sizeof check);
+    check[1]=1;
+    for(int i=2;i<=sz;i+=2){
+        check[i]=2;
+    }
+    for(int i=3;i<sz;i+=2) if(check[i]==-1)
+    {
+        primes.push_back(i);
+        check[i]=i;
+        for(int j=2;i*j<sz;j++){
+            if(check[i*j]==-1){
+                check[i*j]=i;
+            }
+        }
+    }
+    NOD[1]=1;
+    for(int i=2;i<=1000000;i++){
+        int x=i,cnt=0;
+        NOD[i]=1;
+        while(x!=1){
+            cnt=1;
+            while(check[x]==check[x/check[x]] && x!=1){
+                cnt++;
+                x=x/check[x];
+            }
+            x/=check[x];
+            NOD[i]*=(cnt+1);
+        }
+    }
+}
+
+
+
+int main()
+{
+    seive();
+    int pos=1;
+    ans[1]=1;
+    for(int i=2;i<=sz;i++){
+        if(NOD[i]>=NOD[pos]){
+            pos=i;
+        }
+        ans[i]=pos;
+    }
+    int t,n;
+    cin>>t;
+    while(t--){
+        cin>>n;
+        cout<<ans[n]<<endl;
+    }
+}
