@@ -39,11 +39,16 @@ string binary(int n)
 }
 
 
-matrix power(matrix A,int p)
+matrix power(matrix A,ll p)
 {
     string bin=binary(p);
-    matrix ret=A;
-    for(int i=1;i<bin.size();i++){
+    matrix ret;
+    ret.col=A.col;
+    ret.row=A.row;
+    for(int i=0;i<ret.row;i++){
+        ret.v[i][i]=1;
+    }
+    for(int i=0;i<bin.size();i++){
         ret=multiply(ret,ret);
         if(bin[i]=='1'){
             ret=multiply(ret,A);
