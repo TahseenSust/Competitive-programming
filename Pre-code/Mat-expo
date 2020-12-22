@@ -60,18 +60,15 @@ struct matrix
         return temp;
     }
 
-    matrix pow(ll pow, matrix ret)
+    matrix pow(ll p, matrix a)
     {
-        if(pow==0){
-            return identity();
-        }
-        matrix temp=(*this);
-        while(pow)
+        matrix ret(a.row,a.col);
+        ret=ret.identity();
+        while(p)
         {
-            if(pow % 2==1)
-                ret=ret*temp;
-            temp=temp*temp;
-            pow/=2;
+            if(p&1)ret=ret*a;
+            a=a*a;
+            p>>=1;
         }
         return ret;
     }
