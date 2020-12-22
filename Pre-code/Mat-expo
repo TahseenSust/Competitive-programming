@@ -1,64 +1,90 @@
-#include<bits/stdc++.h>
-using namespace std;
-typedef long long ll;
-int MOD=10000;
+int MOD=10;
 
-struct matrix{
-    int v[10][10],row,col;
-};
-
-
-matrix multiply(const matrix &A,const matrix &B)
+struct matrix
 {
-    matrix r;
-    r.row = A.row;
-    r.col = B.col;
+    int mat[31][31];
+    int row,col;
 
-    for(int i=0;i<r.row;i++){
-        for(int j=0;j<r.col;j++){
-            int sum=0;
-            for(int k=0;k<A.col;k++){
-                sum+=(A.v[i][k]*B.v[k][j]);
-                sum%=MOD;
+    matrix()
+    {
+//        memset(mat,0,sizeof mat);
+    }
+    matrix(int a, int b)
+    {
+        row=a,col=b;
+//        memset(mat,0,sizeof mat);
+    }
+
+    matrix operator*(const matrix &p) const
+    {
+        assert(col == p.row);
+        matrix temp;
+        temp.row = row;
+        temp.col = p.col;
+        for (int i = 0; i < temp.row; i++)
+        {
+            for (int j = 0; j < temp.col; j++)
+            {
+                int sum = 0;
+                for (int k = 0; k <col;  k++)
+                {
+                    sum += ((mat[i][k]) * (p.mat[k][j]));
+                    sum%=MOD;
+                }
+                temp.mat[i][j] = sum;
             }
-            r.v[i][j]=sum;
         }
+        return temp;
     }
-    return r;
-}
-
-string binary(int n)
-{
-    string ret="";
-    while(n){
-        ret+=((n%2==0)?"0":"1");
-        n/=2;
-    }
-    reverse(ret.begin(),ret.end());
-    return ret;
-}
-
-
-matrix power(matrix A,ll p)
-{
-    string bin=binary(p);
-    matrix ret;
-    ret.col=A.col;
-    ret.row=A.row;
-    for(int i=0;i<ret.row;i++){
-        ret.v[i][i]=1;
-    }
-    for(int i=0;i<bin.size();i++){
-        ret=multiply(ret,ret);
-        if(bin[i]=='1'){
-            ret=multiply(ret,A);
+    matrix operator+ (const matrix &p) const
+    {
+        assert(row==p.row && col==p.col);
+        matrix temp;
+        temp.row=row;
+        temp.col=col;
+        for(int i=0; i<temp.row; i++)
+        {
+            for(int j=0; j<temp.col; j++)
+                temp.mat[i][j]=((mat[i][j])+(p.mat[i][j]))%MOD;
         }
+        return temp;
     }
-    return ret;
-}
 
-int main()
-{
+    matrix identity()
+    {
+        matrix temp;
+        temp.row=row;
+        temp.col=col;
+        ms(temp.mat,0);
 
+        for(int i=0; i<row; i++)
+            temp.mat[i][i]=1;
+        return temp;
+    }
 
-}
+    matrix pow(ll pow, matrix ret)
+    {
+        matrix temp=(*this);
+        while(pow)
+        {
+            if(pow % 2==1)
+                ret=ret*temp;
+            temp=temp*temp;
+            pow/=2;
+        }
+        return ret;
+    }
+
+    void show()
+    {
+//        printf("-----------------------------\n");
+        for(int i=0; i<row; i++)
+        {
+            for(int j=0; j<col; j++)
+                printf("%d",mat[i][j]);
+            printf("\n");
+        }
+//        printf("-----------------------------\n");
+    }
+
+};
