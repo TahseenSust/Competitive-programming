@@ -236,6 +236,7 @@ int main() {
 			if(s[0]=='Q') {
 				query(a-1, b-1);
 			} else {
+				// change ath edge with value b
 				change(a-1, b);
 			}
 		}
