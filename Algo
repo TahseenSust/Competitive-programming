@@ -3,6 +3,25 @@
   b. https://forthright48.com/application-of-prufer-code-random-tree-generation-cayleys-formula-and-building-tree-from-degree-count/
   c. https://cp-algorithms.com/graph/pruefer_code.html
 }
+
 2. DSU{
   a. https://cp-algorithms.com/data_structures/disjoint_set_union.html
+}
+
+3. HLD{
+  a. https://blog.anudeep2011.com/heavy-light-decomposition/
+  b. https://codeforces.com/blog/entry/12239
+}
+
+3. Persistent segment tree{
+  a. https://discuss.codechef.com/t/persistence-made-simple-tutorial/14915
+  b. https://iq.opengenus.org/persistent-segment-tree/
+  c. https://rezwanarefin01.github.io/posts/persistent-segment-tree-01/
+  d. https://rezwanarefin01.github.io/posts/persistent-segment-tree-02/
+  e. https://blog.anudeep2011.com/persistent-segment-trees-explained-with-spoj-problems/
+}
+
+4. Centroid Decomposition{
+  a. https://tanujkhattar.wordpress.com/2016/01/10/centroid-decomposition-of-a-tree/
+  b. https://medium.com/carpanese/an-illustrated-introduction-to-centroid-decomposition-8c1989d53308
 }
