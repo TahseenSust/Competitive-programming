@@ -1,0 +1,137 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define FAST ios_base::sync_with_stdio(false);cin.tie(NULL);
+#define endl '\n'
+#define F first
+#define S second
+#define eb emplace_back
+#define pb push_back
+typedef long long ll;
+typedef pair<int, int> pii;
+/*
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/detail/standard_policies.hpp>
+using namespace __gnu_pbds;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ost; // set
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset; // multiset
+*/
+// direction array
+int dx[] = {1, -1, 0, 0};
+int dy[] = {0, 0, 1, -1};
+// Bitmask
+/*
+bool check(int mask,int pos){return mask&(1<<pos);}
+int SET(int mask,int pos){return mask|(1<<pos);}
+int FLIP(int mask,int pos){return mask^(1<<pos);}
+int reset(int mask,int pos){return mask&~(1 << pos);}
+*/
+
+const int N=1505;
+
+ll qpow(ll n, ll k, ll mod) {
+	ll
+	ans = 1; assert(k >= 0); n %= mod; while (k > 0) {
+		if (k & 1)
+			ans = (ans * n) % mod; n = (n * n) % mod; k >>= 1;
+	} return ans % mod;
+}
+const int MOD1 = 127657753, MOD2 = 987654319;
+const int p1 = 137, p2 = 277;
+int invp1, invp2;
+pii pw[N], invpw[N];
+void pre()
+{
+	pw[0] = {1, 1};
+	for (int i = 1; i < N; i++) {
+		pw[i].F = 1LL * pw[i - 1].F * p1 % MOD1;
+		pw[i].S = 1LL * pw[i - 1].S * p2 % MOD2;
+	}
+	invp1 = qpow(p1, MOD1 - 2, MOD1);
+	invp2 = qpow(p2, MOD2 - 2, MOD2);
+	invpw[0] = {1, 1};
+	for (int i = 1; i < N; i++) {
+		invpw[i].F = 1LL * invpw[i - 1].F * invp1 % MOD1;
+		invpw[i].S = 1LL * invpw[i - 1].S * invp2 % MOD2;
+	}
+}
+///returns hash of string s
+pii get_hash(string s)
+{
+	int n = s.size();
+	pii ans = {0, 0};
+	for (int i = 0; i < n; i++) {
+		ans.F = (ans.F + 1LL * pw[i].F * s[i] % MOD1) % MOD1;
+		ans.S = (ans.S + 1LL * pw[i].S * s[i] % MOD2) % MOD2;
+	}
+	return ans;
+}
+struct RollingHash
+{
+	int n;
+	string s;///0-indexed
+	vector<pii>hs;///1-indexed
+	void init(string _s)
+	{
+		n = _s.size();
+		s = _s;
+		hs.eb(0, 0);
+		for (int i = 0; i < n; i++) {
+			pii p;
+			p.F = (hs[i].F + 1LL * pw[i].F * s[i] % MOD1) % MOD1;
+			p.S = (hs[i].S + 1LL * pw[i].S * s[i] % MOD2) % MOD2;
+			hs.pb(p);
+		}
+	}
+///returns hash of substring [l....r],1-indexed
+	pii get_hash(int l, int r)
+	{
+		pii ans;
+		ans.F = (hs[r].F - hs[l - 1].F + MOD1) % MOD1 * 1LL * invpw[l-1].F % MOD1;
+		ans.S = (hs[r].S - hs[l - 1].S + MOD2) % MOD2 * 1LL * invpw[l-1].S % MOD2;
+		return ans;
+	}
+///returns hash of total string
+	pii get()
+	{
+		return get_hash(1, n);
+	}
+};
+RollingHash h;
+int main()
+{
+///never forget to initialize pre()
+	int k;
+	pre();
+	string str,good;
+	cin>>str>>good>>k;
+	h.init(str);
+
+	int sum[1508]={0};
+
+	for(int i=0;i<str.size();i++){
+		if(good[str[i]-'a']=='0'){
+			sum[i+1]=1;
+		}
+		sum[i+1]+=sum[i];
+	}
+
+	map<pii,bool>mp;
+
+	int ans=0;
+
+	for(int i=0;i<str.size();i++){
+		for(int j=i;j<str.size();j++){
+			// cout<<sum[j+1]-sum[i]<<' '<<(mp.find(h.get_hash(i,j))==mp.end())<<endl;
+			// cout<<"--"<<h.get_hash(i,j).first<<' '<<h.get_hash(i,j).second<<endl;
+			if(sum[j+1]-sum[i]<=k && mp.find(h.get_hash(i+1,j+1))==mp.end()){
+				mp[h.get_hash(i+1,j+1)]=1;
+				// cout<<i<<' '<<j<<endl;
+				ans++;
+			}
+		}
+	}
+	cout<<ans<<endl;
+}
+
+
