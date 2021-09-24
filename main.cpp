@@ -28,7 +28,14 @@ int FLIP(int mask,int pos){return mask^(1<<pos);}
 int reset(int mask,int pos){return mask&~(1 << pos);}
 
 */
-
+string to_bin(int mask)
+{
+	string str;
+	for(int i=0;i<32;i++){
+		str=str+(char)(check(mask,i)+'0');
+	}
+	return str;
+}
 
 int main()
 {
