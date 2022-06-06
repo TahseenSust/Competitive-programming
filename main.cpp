@@ -27,7 +27,7 @@ int SET(int mask,int pos){return mask|(1<<pos);}
 int FLIP(int mask,int pos){return mask^(1<<pos);}
 int reset(int mask,int pos){return mask&~(1 << pos);}
 
-*/
+
 string to_bin(int mask)
 {
 	string str;
@@ -36,6 +36,7 @@ string to_bin(int mask)
 	}
 	return str;
 }
+*/
 
 int main()
 {
