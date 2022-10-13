@@ -1,3 +1,12 @@
+
+cin>>n>>m;
+
+for(int i=0;i<m;i++){
+    cin>>u>>v;
+    G[u].push_back(v);
+    vis[v]++;
+}
+// vis represent indegree of a node
 vector<int>st;
 queue<int>Q;
 for(int i=1;i<=n;i++){
