@@ -1,0 +1,42 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<int,int> pii;
+
+const ll mod = 998244353;
+
+
+ll fact[300005];
+ll invfact[300005];
+ll inv[300005];
+void factorial()
+{
+    fact[0] = 1;
+    for(ll i=1;i<300005;i++)
+        fact[i] = fact[i-1] * i % mod;
+}
+void invfactorial()
+{
+    inv[0] = inv[1] =  invfact[0] = 1;
+    for(int i=2;i<300005;i++)
+        inv[i] = mod - (mod/i) * inv[mod%i] %mod;
+    for(ll i=1;i<300005;i++)
+        invfact[i] = invfact[i - 1] * inv[i] % mod;
+}
+ll ncr(ll n , ll r)
+{
+	if(n<r)
+		return 0;
+    return ((fact[n] * invfact[n-r])%mod * invfact[r])%mod;
+}
+
+int main()
+{
+	factorial();
+	invfactorial();
+
+
+
+
+	
+}
