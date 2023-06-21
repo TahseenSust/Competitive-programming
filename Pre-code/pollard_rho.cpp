@@ -88,7 +88,7 @@ ll rho(ll n,ll c)
     {
         x=(mul(x,x,n)+c)%n;
         p=y>x?y-x:x-y;
-        p=__gcd(n,p);
+        p=__gcd((ull)n,(ull)p);
         if(i==k)
             y=x,k+=k;
     }
@@ -127,9 +127,10 @@ int main()
         solve(x);
     }
 
-    for( auto p: mp )
+    for( auto p: mp ){
+    	cout<<p.first<<' '<<p.second<<endl;
     	ans= ( ans*(p.second+1) );
+    }
 
     printf("%lld\n", ans);
 }
-
